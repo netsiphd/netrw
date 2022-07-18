@@ -30,3 +30,8 @@ jobs:
     - name: Lint with black
       run: |
         black --check netrw
+        black --check tests
+    - name: Test with pytest
+      run: |
+        cd tests/
+        pytest
