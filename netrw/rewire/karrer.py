@@ -4,6 +4,7 @@ import itertools as it
 import random
 import networkx as nx
 
+
 class KarrerRewirer(BaseRewirer):
     """Perturb one edge of node `i` in the way described by Karrer et al. (2008).
     Choose an edge incident on `i` at random; delete it and replace it with
@@ -26,7 +27,11 @@ class KarrerRewirer(BaseRewirer):
 
         i = random.choice(list(G.nodes))
 
-        potential_edges = set(it.product(G.nodes, G.nodes)) - set(zip(G.nodes, G.nodes)) - set(G.edges)
+        potential_edges = (
+            set(it.product(G.nodes, G.nodes))
+            - set(zip(G.nodes, G.nodes))
+            - set(G.edges)
+        )
 
         new_edge = random.choice(list(potential_edges))
         old_edge = random.choice(list(G.edges(i)))
