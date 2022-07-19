@@ -10,8 +10,8 @@ def test_same_return_type():
 
     for label, obj in rewire.__dict__.items():
         if isinstance(obj, type) and BaseRewirer in obj.__bases__:
-            G_rewired = obj().rewire(G, copy_graph=True)
-            H_rewired = obj().rewire(H, copy_graph=True)
+            G_rewired = obj().full_rewire(G, copy_graph=True)
+            H_rewired = obj().full_rewire(H, copy_graph=True)
 
             assert isinstance(G_rewired, type(G))
             assert isinstance(H_rewired, type(H))
