@@ -15,7 +15,7 @@ class GlobalRewiring(BaseRewirer):
         """
         Run a full rewire of the global edge rewiring.
         """
-        return step_rewire(G, p, timesteps, tries, copy_graph, verbose)
+        return self.step_rewire(G, p, timesteps, tries, copy_graph, verbose)
 
     def step_rewire(self, G, p, timesteps=1, tries=100, copy_graph=True, verbose=False):
         """
@@ -101,7 +101,7 @@ class GlobalRewiring(BaseRewirer):
                     G.add_edge(new_edge[0], new_edge[1])
 
         if verbose:
-            return G, prev_edges, new_edges
+            return G#, prev_edges, new_edges
 
         else:
             return G
