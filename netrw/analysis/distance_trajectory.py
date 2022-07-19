@@ -74,6 +74,47 @@ def plotDistanceTrajectory(G, distance=netrd.distance.Hamming, num_steps=100,
     show=['mean', 'median', 'std-env'], labels=None, add_legend=True, fig=None,
     ax=None, linecolors=None, envcolor='cyan', 
     xlabel='Number of rewiring steps', ylabel=None, **kwargs):
+    '''
+    Make a nice plot of how a graph distance changes as a function of number of 
+    rewiring steps.
+    
+    Parameters
+    ----------
+    G : a networkx Graph or DiGraph
+    
+    distance : netrd distance class (default: Hamming distance)
+       Distance to be tracked over time
+    
+    num_steps : integer
+       Number of rewiring steps
+    
+    show : list of strings
+       A list of strings indicating 
+    
+    labels : list of strings
+       A list of labels for the shown in plot legend.
+    
+    add_legend : bool
+       If True, add a legend to the output plot.
+    
+    fig : matplotlib figure (default=None)
+       Figure into which the results should be drawn.
+    
+    ax : matplotlib axes (default=None)
+       Axes into which results should be drawn.
+       
+    linecolors : list (default=None)
+       List of color strings for lines plotted.
+    
+    envcolor : string
+       Color of the shaded region
+    
+    xlabel : string (default='Number of rewiring steps')
+       Label to go on the x axis
+       
+    ylabel : string (default=Name of distance class)
+       Label to go on the y axis
+    '''
         
     # check whether input for num steps in a number of rewiring steps (int)
     # or a list of steps
