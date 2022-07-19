@@ -29,7 +29,7 @@ def properties_overtime(init_graph, rewire_method, property1, tmax, numit):
         G0 = deepcopy(init_graph)
         property_list = [property1(G0)] # calculate property of initial network
         for j in range(tmax):
-            rewire_method.rewire(G0) #rewire 
+            G0 = rewire_method.rewire(G0, copy_graph=False) #rewire 
             property_list.append(property1(G0)) #calculate property of the rewired network
         property_dict[i] = property_list
         
