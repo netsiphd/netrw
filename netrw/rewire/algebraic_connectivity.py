@@ -22,8 +22,8 @@ class AlgebraicConnectivity(BaseRewirer):
     Applied Mathematics and computation 219.10 (2013): 5465-5479.
     """
 
-    def maximize_algebraic_connectivity(
-        self, G, phi=1, copy_network=False, directed=False
+    def rewire(
+        self, G, phi=1, copy_graph=False, directed=False
     ):
         """
         Rewire phi edges to maximize algebraic connectivity.
@@ -31,13 +31,13 @@ class AlgebraicConnectivity(BaseRewirer):
         Parameters:
             G (networkx)
             phi (int) - number of edge rewires
-            copy_network (bool) - return a copy of the network
+            copy_graph (bool) - return a copy of the network
             directed (bool) - compute for directed network on undirected copy
 
         Return:
             G (networkx)
         """
-        if copy_network:
+        if copy_graph:
             G = copy.deepcopy(G)
 
         if not nx.is_connected(G):
