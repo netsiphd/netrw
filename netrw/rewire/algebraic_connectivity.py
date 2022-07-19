@@ -22,7 +22,7 @@ class AlgebraicConnectivity(BaseRewirer):
     Applied Mathematics and computation 219.10 (2013): 5465-5479.
     """
 
-    def maximize_algebraic_connectivity(
+    def rewire(
         self, G, phi=1, copy_network=False, directed=False
     ):
         """

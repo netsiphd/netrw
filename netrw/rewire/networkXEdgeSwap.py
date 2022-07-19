@@ -24,5 +24,5 @@ class NetworkXEdgeSwap(BaseRewirer):
             G = copy.deepcopy(G)
             
         nx.double_edge_swap(G, nswap=1)
-
+        
         return G
