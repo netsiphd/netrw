@@ -1,5 +1,4 @@
 from base import BaseRewirer
-import networkx as nx
 import copy
 import random
 import warnings
@@ -10,7 +9,9 @@ class GlobalRewiring(BaseRewirer):
     Rewire a network where a random edge is chosen and rewired with probability p.
     """
 
-    def global_edge_rewiring(self, G, p, timesteps=-1, tries=100, copy_graph=True, verbose=False):
+    def global_edge_rewiring(
+        self, G, p, timesteps=-1, tries=100, copy_graph=True, verbose=False
+    ):
         """
         Generate a Watts-Strogatz network with n nodes where each node is connected
         to its k-nearest neighbors and each edge is rewired with probability p.
@@ -36,7 +37,9 @@ class GlobalRewiring(BaseRewirer):
 
         # Check for empty graph
         if len(G.edges()) == 0:
-            warnings.warn("Resulting graph is empty as input was an empty graph and no edges can be rewired.")
+            warnings.warn(
+                "Resulting graph is empty as input was an empty graph and no edges can be rewired."
+            )
             return G
 
         # If verbose save edge changes
@@ -57,8 +60,8 @@ class GlobalRewiring(BaseRewirer):
                 edge = random.choice(list(G.edges()))
 
                 # Choose end to rewire
-                end_to_rewire = random.choice([0,1])
-                end_to_stay = abs(end_to_rewire-1)
+                end_to_rewire = random.choice([0, 1])
+                end_to_stay = abs(end_to_rewire - 1)
 
                 # Choose random node to rewire to
                 nodes_to_choose = list(G.nodes())
@@ -67,9 +70,9 @@ class GlobalRewiring(BaseRewirer):
 
                 # Rewire edge
                 if end_to_rewire == 0:
-                    new_edge = (node,edge[end_to_stay])
+                    new_edge = (node, edge[end_to_stay])
                 else:
-                    new_edge = (edge[end_to_stay],node)
+                    new_edge = (edge[end_to_stay], node)
 
                 # Check that edge is new
                 if new_edge not in G.edges():
@@ -78,7 +81,9 @@ class GlobalRewiring(BaseRewirer):
 
             # Check that no edge was added
             if valid is False:
-                warnings.warn("No rewiring occured as no new edge was found in tries allotted.")
+                warnings.warn(
+                    "No rewiring occured as no new edge was found in tries allotted."
+                )
 
             else:
                 # Update dictionaries if verbose
@@ -87,8 +92,8 @@ class GlobalRewiring(BaseRewirer):
                     new_edges[t] = [new_edge]
 
                 # Update network
-                G.remove_edge(edge[0],edge[1])
-                G.add_edge(new_edge[0],new_edge[1])
+                G.remove_edge(edge[0], edge[1])
+                G.add_edge(new_edge[0], new_edge[1])
 
         if verbose:
             return G, prev_edges, new_edges
