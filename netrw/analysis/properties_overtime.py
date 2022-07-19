@@ -25,6 +25,7 @@ def properties_overtime(init_graph, rewire_method, property1, tmax, numit):
     
     property_dict = {}
     rw = rewire_method()
+
     for i in range(numit):
         G0 = deepcopy(init_graph)
         property_list = [property1(G0)] # calculate property of initial network
@@ -34,11 +35,12 @@ def properties_overtime(init_graph, rewire_method, property1, tmax, numit):
         property_dict[i] = property_list
         
     
-    alllist = [] # list of all properties
+    alllist = [] # list of all properties for all iterations at each time step
     for k in range(tmax):
         alllist.append([])
         for l in range(numit):
             alllist[k].append(property_dict[l][k])
+            
     # find mean and standard deviation over different iterations of rewiring process        
     meanlist = []
     sdlist = []
