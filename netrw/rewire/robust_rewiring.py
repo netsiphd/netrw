@@ -15,7 +15,7 @@ class RobustRewiring(BaseRewirer):
     Louzada, V. H. P., Daolio, F., Herrmann, H. J., & Tomassini, M. (2013). Smart rewiring for network robustness. Journal of Complex Networks, 1(2), 150–159. https://doi.org/10.1093/comnet/cnt010
     """
 
-    def robust_rewire(self, G, copy_graph=False, timesteps=1000, step_rewire=False):
+    def full_rewire(self, G, copy_graph=False, timesteps=1000, step_rewire=False):
 
         if copy_graph:
             G = copy.deepcopy(G)
