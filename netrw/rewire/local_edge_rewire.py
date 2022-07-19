@@ -23,7 +23,7 @@ class LocalEdgeRewiring(BaseRewirer):
     - Is not implemented specifically for directed graphs. (Could be though.)
     """
 
-    def step_rewire(self, G, copy_graph=True, verbose=False):
+    def step_rewire(self, G, copy_graph=False, verbose=False):
         """
         Parameters
         ----------
