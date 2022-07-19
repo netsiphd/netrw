@@ -13,6 +13,7 @@ class GlobalRewiring(BaseRewirer):
         self, G, p, timesteps=-1, tries=100, copy_graph=True, verbose=False
     ):
         """
+<<<<<<< HEAD
         Run a single step of the `global_edge_rewiring` function.
         """
         return global_edge_rewiring(G, p, timesteps, tries, copy_graph, verbose)
@@ -30,6 +31,13 @@ class GlobalRewiring(BaseRewirer):
     def global_edge_rewiring(
         self, G, p, timesteps=-1, tries=100, copy_graph=True, verbose=False
     ):
+=======
+        Run a full rewire of the global edge rewiring.
+        """
+        return step_rewire(G, p, timesteps, tries, copy_graph, verbose)
+
+    def step_rewire(self, G, p, timesteps=1, tries=100, copy_graph=True, verbose=False):
+>>>>>>> b45cf5f311656523c6c0b32975bcc2df491c88ce
         """
         Generate a Watts-Strogatz network with n nodes where each node is connected
         to its k-nearest neighbors and each edge is rewired with probability p.
@@ -59,12 +67,21 @@ class GlobalRewiring(BaseRewirer):
 
         # If verbose save edge changes
         if verbose:
+<<<<<<< HEAD
             prev_edges = {}
             new_edges = {}
 
         # Give every edge opportunity to change
         if timesteps == -1:
             timesteps = len(list(G.edges()))*10
+=======
+            removed_edges = {}
+            added_edges = {}
+
+        # Give every edge opportunity to change
+        if timesteps == -1:
+            timesteps = len(list(G.edges())) * 10
+>>>>>>> b45cf5f311656523c6c0b32975bcc2df491c88ce
 
         # Rewire at each timestep
         for t in range(timesteps):
@@ -105,8 +122,13 @@ class GlobalRewiring(BaseRewirer):
                 else:
                     # Update dictionaries if verbose
                     if verbose:
+<<<<<<< HEAD
                         prev_edges[t] = [edge]
                         new_edges[t] = [new_edge]
+=======
+                        removed_edges[t] = [edge]
+                        added_edges[t] = [new_edge]
+>>>>>>> b45cf5f311656523c6c0b32975bcc2df491c88ce
 
                     # Update network
                     G.remove_edge(edge[0], edge[1])

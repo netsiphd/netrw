@@ -2,7 +2,7 @@ from .base import BaseRewirer
 import networkx as nx
 import warnings
 import copy
-import numpy as np
+import random
 
 class DkRewire(BaseRewirer):
     """
@@ -14,7 +14,7 @@ class DkRewire(BaseRewirer):
 
     Orsini, C. et al. Quantifying randomness in real networks. Nat. Commun. 6:8627 doi: 10.1038/ncomms9627 (2015).
     """
-    def dk_rewire(G,d,copy_network=True,timesteps=1,tries=100,directed=False,verbose=False,seed=None):
+    def step_rewire(G,d,copy_graph=True,timesteps=1,tries=1000,directed=False,verbose=False):
         """
         This function calls the necessary function to rewire such that the
         'd'k-distribution is preserved for given d. This function is implemented
@@ -28,17 +28,16 @@ class DkRewire(BaseRewirer):
                 d = 2 - joint degree distribution
                 d = 3 - triangle and wedge degree distributions
                 d = 4 - star, path, triangle with path, square, square with diagonal, and K4 distributions
-            copy_network (bool) - update a copy of the network. default True.
+            copy_graph (bool) - update a copy of the network. default True.
             timesteps (int) - number of edge swaps to perform. default 1.
             tries (int) - maximum number of tries to perform an edge swap. default 100.
             directed (bool) - indicator of whether to force directed graph to be undirected. default False.
             verbose (bool) - indicator of whether edges rewired should be returned. default False.
-            seed (int) - indicator of random generator state
 
         Returns:
             G (networkx)
-            prev_edges (dict) - edges deleted at each timestep
-            new_edges (dict) - edges added at each timestep
+            removed_edges (dict) - edges deleted at each timestep
+            added_edges (dict) - edges added at each timestep
         """
         # Check that graph is undirected
         if nx.is_directed(G):
@@ -50,39 +49,36 @@ class DkRewire(BaseRewirer):
                 raise ValueError("This algorithm is designed for undirected graphs. If you wish to run anyway as an undirected graph, set directed=True")
 
         # Make copy if necessary
-        if copy_network:
+        if copy_graph:
             G = copy.deepcopy(G)
-
-        # Check for valid distributions
-        if d > 4 or d < 0:
-            raise ValueError("d must be 0, 1, 2, 3, or 4.")
-
-        if type(d) is not int:
-            raise ValueError("d must be an integer.")
 
         # Calculate 0k-swap
         if d == 0:
-            zero_k_swap(G,timesteps,verbose,seed)
+            zero_k_swap(G,timesteps,verbose)
 
         # Calculate 1k-swap
-        if d == 1:
-            one_k_swap(G,timesteps,tries,verbose,seed)
+        elif d == 1:
+            one_k_swap(G,timesteps,tries,verbose)
 
         # Calculate 2k-swap
-        if d == 2:
-            two_k_swap(G,timesteps,tries,verbose,seed)
+        elif d == 2:
+            two_k_swap(G,timesteps,tries,verbose)
 
-        # Calculate 3k-swap
-        if d == 3:
-            three_k_swap(G,timesteps,tries,verbose,seed)
+        # Calculate 2.1k-swap
+        elif d == 2.1:
+            two_one_k_swap(G,timesteps,tries,verbose)
 
-        # Calculate 4k-swap
-        if d == 4:
-            four_k_swap(G,timesteps,tries,verbose,seed)
+        # Calculate 2.5k-swap
+        elif d == 2.5:
+            two_five_k_swap(G,timesteps,tries,verbose)
+
+        else:
+            raise ValueError("d must be 0, 1, 2, 2.1, or 2.5")
+
 
         pass
 
-    def zero_k_swap(G,timesteps,verbose,seed):
+    def zero_k_swap(G,timesteps,verbose):
         """
         Rewires one edge to a random node. This maintains the average degree of the network.
         At each timestep, a random edge is chosen and a random end of the edge is chosen.
@@ -98,37 +94,41 @@ class DkRewire(BaseRewirer):
 
         Returns:
             G (networkx)
-            prev_edges (dict) - edges deleted at each timestep
-            new_edges (dict) - edges added at each timestep
+            removed_edges (dict) - edges deleted at each timestep
+            added_edges (dict) - edges added at each timestep
         """
         # Initialize dictionaries if verbose
         if verbose:
-            prev_edges = {}
-            new_edges = {}
+            removed_edges = {}
+            added_edges = {}
 
         # Edge swap for each time step
         for t in range(timesteps):
             # Choose a random edge
-            edge = np.random.choice(list(G.edges()),seed=seed)
+            edge = random.choice(G.edges())
 
             # Choose a random end of the edge
-            end_of_edge, not_end_of_edge = np.random.choice([0,1],2,seed=seed)
+            end_of_edge = random.choice([0,1])
+            not_end_of_edge = abs(end_of_edge-1)
 
             # Choose a random node
             nodes_to_choose = list(G.nodes())
             nodes_to_choose.pop(edge[end_of_edge])
-            node = np.random.choice(nodes_to_choose,seed=seed)
+            node = random.choice(nodes_to_choose)
 
             # If verbose, store edges
             if verbose:
-                prev_edges[t] = [edge]
-                new_edges[t] = [(edge[not_end_of_edge],node)]
+                removed_edges[t] = [edge]
+                added_edges[t] = [(edge[not_end_of_edge],node)]
 
             # Update network
             G.remove_edge(edge[0],edge[1])
             G.add_edge(edge[not_end_of_edge],node)
 
-        return G
+        if verbose:
+            return G, removed_edges, added_edges
+        else:
+            return G
 
     def one_k_swap(G,timesteps,tries,verbose,seed):
         """
@@ -162,7 +162,8 @@ class DkRewire(BaseRewirer):
                 edges = list(G.edges())
 
                 # Choose two random edges
-                old_edge_1, old_edge_2 = np.random.choice(edges,2,seed=seed)
+                old_edge_1 = random.choice(edges)
+                old_edge_2 = random.choice(edges)
 
                 if .5 < np.random.random(seed=seed)
                     # Swap edges
@@ -184,7 +185,7 @@ class DkRewire(BaseRewirer):
 
             # Check that tries was not maximized
             if valid is False:
-                raise RuntimeError("No pair of edges was found with new edges that did not exist in tries allotted.")
+                warnings.warn("No pair of edges was found with new edges that did not exist in tries allotted. Switch was not made at this timestep.")
 
             # Store edges if verbose
             if verbose:
@@ -196,3 +197,23 @@ class DkRewire(BaseRewirer):
             G.add_edges_from([new_edge_1,new_edge_2])
 
         return G
+
+    def two_k_swap(G,timesteps,tries,verbose):
+        """
+        Rewires an edge while maintaining the joint degree distribution of the network.
+        A swap is done by selecting two edges which each have a node of equal degree
+        (e_1 = (v_1,v_2) and e_2 = (w_1,w_2) where d(v_1)=d(w_1)). It then swaps the edges
+        to become (v_1,w_2) and (w_1,v_2).
+
+        Parameters:
+            G (networkx)
+            timesteps (int) - number of edge swaps to perform
+            tries (int) - maximum number of edge swap attempts at each timestep
+            verbose (bool) - indicator of storing edges deleted and added
+
+        Returns:
+            G (networkx)
+            removed_edges (dict) - dictionary of edges removed
+            added_edges (dict) - dictionary of edges added
+        """
+        # Initialize storing
