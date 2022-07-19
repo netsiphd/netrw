@@ -53,47 +53,49 @@ class GlobalRewiring(BaseRewirer):
 
         # Rewire at each timestep
         for t in range(timesteps):
-            # Attempt to rewire
-            valid = False
-            for _ in range(tries):
-                # Choose edge to rewire
-                edge = random.choice(list(G.edges()))
+            # Decide whether to rewire
+            if p < random.random():
+                # Attempt to rewire
+                valid = False
+                for _ in range(tries):
+                    # Choose edge to rewire
+                    edge = random.choice(list(G.edges()))
 
-                # Choose end to rewire
-                end_to_rewire = random.choice([0, 1])
-                end_to_stay = abs(end_to_rewire - 1)
+                    # Choose end to rewire
+                    end_to_rewire = random.choice([0, 1])
+                    end_to_stay = abs(end_to_rewire - 1)
 
-                # Choose random node to rewire to
-                nodes_to_choose = list(G.nodes())
-                nodes_to_choose.pop(edge[end_to_stay])
-                node = random.choice(nodes_to_choose)
+                    # Choose random node to rewire to
+                    nodes_to_choose = list(G.nodes())
+                    nodes_to_choose.pop(edge[end_to_stay])
+                    node = random.choice(nodes_to_choose)
 
-                # Rewire edge
-                if end_to_rewire == 0:
-                    new_edge = (node, edge[end_to_stay])
+                    # Rewire edge
+                    if end_to_rewire == 0:
+                        new_edge = (node, edge[end_to_stay])
+                    else:
+                        new_edge = (edge[end_to_stay], node)
+
+                    # Check that edge is new
+                    if new_edge not in G.edges():
+                        valid = True
+                        break
+
+                # Check that no edge was added
+                if valid is False:
+                    warnings.warn(
+                        "No rewiring occured as no new edge was found in tries allotted."
+                    )
+
                 else:
-                    new_edge = (edge[end_to_stay], node)
+                    # Update dictionaries if verbose
+                    if verbose:
+                        prev_edges[t] = [edge]
+                        new_edges[t] = [new_edge]
 
-                # Check that edge is new
-                if new_edge not in G.edges():
-                    valid = True
-                    break
-
-            # Check that no edge was added
-            if valid is False:
-                warnings.warn(
-                    "No rewiring occured as no new edge was found in tries allotted."
-                )
-
-            else:
-                # Update dictionaries if verbose
-                if verbose:
-                    prev_edges[t] = [edge]
-                    new_edges[t] = [new_edge]
-
-                # Update network
-                G.remove_edge(edge[0], edge[1])
-                G.add_edge(new_edge[0], new_edge[1])
+                    # Update network
+                    G.remove_edge(edge[0], edge[1])
+                    G.add_edge(new_edge[0], new_edge[1])
 
         if verbose:
             return G, prev_edges, new_edges
