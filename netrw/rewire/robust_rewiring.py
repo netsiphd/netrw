@@ -68,6 +68,5 @@ class RobustRewiring(BaseRewirer):
                 G.remove_edge(index_k, index_n)
                 G.add_edge(index_k, index_j)
                 G.add_edge(index_m, index_n)
-                print("HI")
 
         return G
