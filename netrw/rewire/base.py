@@ -14,3 +14,6 @@ class BaseRewirer:
 
     def rewire(self, G, **kwargs):
         return G
+    
+    def step_rewire(self, G, **kwargs):
+        raise NotImplementedError
