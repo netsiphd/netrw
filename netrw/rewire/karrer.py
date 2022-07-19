@@ -1,15 +1,16 @@
 from . import BaseRewirer
 import copy
-import itertools as it
-import random
 import networkx as nx
+import numpy as np
 
 
 class KarrerRewirer(BaseRewirer):
-    """Perturb one edge of node `i` in the way described by Karrer et al. (2008).
-    Choose an edge incident on `i` at random; delete it and replace it with
-    a new edge that is not already present in the network (and is not
-    necessarily incident on `i`).
+    """Perturb the graph in the way described by Karrer et al. (2008).
+    For each edge, with probability alpha delete it and replace it with
+    a new edge connecting nodes i and j following the probabilities of
+    the configuration model.
+
+    Note that the method may produce graphs with self-loops and multi-edges.
 
     Karrer, Brian, Elizaveta Levina, and
     M. E. J. Newman. 2008. “Robustness of Community Structure in
@@ -22,21 +23,34 @@ class KarrerRewirer(BaseRewirer):
         if copy_graph:
             G = copy.deepcopy(G)
 
-        if random.random() > alpha:
+        # If probability is equal to 0, do nothing
+        if alpha == 0:
             return G
 
-        i = random.choice(list(G.nodes))
+        # Auxiliary list for edge probabilities
+        nodes_repeated = [[id] * degree for id, degree in G.degree()]
+        nodes_repeated = [elem for elems in nodes_repeated for elem in elems]
 
-        potential_edges = (
-            set(it.product(G.nodes, G.nodes))
-            - set(zip(G.nodes, G.nodes))
-            - set(G.edges)
+        # Random selection of edges to preserve
+        current_edges = list(G.edges())
+        random_numbers = np.random.uniform(0, 1, len(current_edges))
+        selected_edges = [
+            current_edges[i]
+            for i in range(len(current_edges))
+            if random_numbers[i] < (1 - alpha)
+        ]
+
+        # Creation of new edges
+        n_new_edges = len(current_edges) - len(selected_edges)
+        np.random.shuffle(nodes_repeated)
+        left_nodes, right_nodes = (
+            nodes_repeated[n_new_edges:],
+            nodes_repeated[:n_new_edges],
         )
+        new_edges = [(x, y) for x, y in zip(left_nodes, right_nodes)]
 
-        new_edge = random.choice(list(potential_edges))
-        old_edge = random.choice(list(G.edges(i)))
-
-        G.remove_edges_from([old_edge])
-        G.add_edges_from([new_edge])
-
-        return G
+        # Create new graph, note that it may have self-loops and multi-edges
+        new_graph = nx.from_edgelist(
+            selected_edges + new_edges, create_using=nx.MultiGraph
+        )
+        return new_graph
