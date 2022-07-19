@@ -60,6 +60,7 @@ def properties_overtime(init_graph, rewire_method, property1, tmax, numit):
     ax0.plot(range(tmax), meanlist, marker='o', color = 'blue')
     ax0.plot(range(tmax), upperbd, color = 'blue')
     ax0.plot(range(tmax), lowerbd, color = 'blue' )  
+    ax0.set_ylim(bottom=0, upper=None)
     ax0.fill_between(range(tmax), upperbd,lowerbd, color='cornflowerblue',alpha=.5) 
     ax0.set_xlabel('number of rewiring steps', fontsize=15)
     ax0.set_ylabel('Mean '+ property1.__name__, fontsize=15)
