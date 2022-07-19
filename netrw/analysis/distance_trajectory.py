@@ -3,7 +3,7 @@ import networkx
 import netrd
 
 def distanceTrajectory(G, distance=netrd.distance.Hamming, rewire=netrw.rewire.KarrerRewirer, null_model=None, 
-    num_rewire=100, num_runs=100, distance_kwargs={}, rewire_kwargs={}, 
+    num_steps=100, num_runs=100, distance_kwargs={}, rewire_kwargs={}, 
     null_model_kwargs={}, **kwargs):
     '''
     Get some data on graph distances as a function of number of rewiring steps.
@@ -18,7 +18,7 @@ def distanceTrajectory(G, distance=netrd.distance.Hamming, rewire=netrw.rewire.K
     
     null_model : ???
     
-    num_rewire : integer or list
+    num_steps : integer or list
        number of rewiring steps to be tracked or ordered list of rewiring
        steps to be tracked
        
@@ -66,8 +66,25 @@ def distanceTrajectory(G, distance=netrd.distance.Hamming, rewire=netrw.rewire.K
     return data
 
 
-def plotDistanceTrajectory(G, **kwargs):
+def plotDistanceTrajectory(G, num_rewire=100, **kwargs):
+        
+    # check whether input for num rewire in a number of rewiring steps (int)
+    # or a list of steps
+    if hasattr(num_rewire, "__iter__"):
+        rewire_steps = num_rewire
+    else:
+        rewire_steps = range(num_rewire)
+
+    data = distanceTrajectory(G, num_rewire=num_rewire, **kwargs)
     
-    data = distanceTrajectory(G, **kwargs)
+    
+    mean = np.mean(data, axis=1)
+    std = np.std(data, axis=1)
+    
+    plt.fill_between(rewire_steps, mean-std, mean+std)
+    plt.plot(rewire_steps, mean)
+    
+    
+    
     
     
