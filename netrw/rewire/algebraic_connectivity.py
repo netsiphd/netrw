@@ -1,10 +1,10 @@
-from base import BaseRewirer
+from .base import BaseRewirer
 import networkx as nx
 import numpy as np
 import copy
-from itertools import combinations
-import matplotlib.pyplot as plt
 from scipy import linalg as la
+import warnings
+
 
 class AlgebraicConnectivity(BaseRewirer):
     """
@@ -21,7 +21,10 @@ class AlgebraicConnectivity(BaseRewirer):
     "Optimizing algebraic connectivity by edge rewiring."
     Applied Mathematics and computation 219.10 (2013): 5465-5479.
     """
-    def maximize_algebraic_connectivity(self, G, phi=1, copy_network=False, directed=False):
+
+    def maximize_algebraic_connectivity(
+        self, G, phi=1, copy_network=False, directed=False
+    ):
         """
         Rewire phi edges to maximize algebraic connectivity.
 
@@ -38,10 +41,15 @@ class AlgebraicConnectivity(BaseRewirer):
             G = copy.deepcopy(G)
 
         if not nx.is_connected(G):
-            raise ValueError("Disconnected graph. This method is implemented for undirected, connected graphs.")
+            raise ValueError(
+                "Disconnected graph. This method is implemented for undirected, connected graphs."
+            )
 
         if nx.is_directed(G) and directed is True:
-            raise Warning("This algorithm is designed for undirected graphs. The graph input is directed and will be formatted to an undirected graph.")
+            warnings.warn(
+                "This algorithm is designed for undirected graphs. The graph input is directed and will be formatted to an undirected graph.",
+                SyntaxWarning,
+            )
             G = nx.to_undirected(G)
 
         # Get necessary parameters
@@ -51,7 +59,7 @@ class AlgebraicConnectivity(BaseRewirer):
         m = len(edges)
 
         # Check for complete graph
-        if m == int(n*(n-1)/2):
+        if m == int(n * (n - 1) / 2):
             raise Warning("Algebraic connectivity is already maximized.")
             return G
 
@@ -65,22 +73,22 @@ class AlgebraicConnectivity(BaseRewirer):
             L = nx.laplacian_matrix(G).toarray()
             vals, vecs = la.eig(L)
             fiedler_idx = np.where(np.argsort(np.abs(vals)))[0][0]
-            v = vecs[:,fiedler_idx]
+            v = vecs[:, fiedler_idx]
 
             # Get all values of alpha
-            alpha = np.abs(np.subtract.outer(v,v))
+            alpha = np.abs(np.subtract.outer(v, v))
 
             # Get alpha_values for edges and non_edges
             non_edges = []
             edge_alpha = []
             non_edge_alpha = []
             for i in range(n):
-                for j in range(i+1,n):
-                    if (nodes[i],nodes[j]) in edges:
-                        edge_alpha.append(alpha[i,j])
+                for j in range(i + 1, n):
+                    if (nodes[i], nodes[j]) in edges:
+                        edge_alpha.append(alpha[i, j])
                     else:
-                        non_edges.append((nodes[i],nodes[j]))
-                        non_edge_alpha.append(alpha[i,j])
+                        non_edges.append((nodes[i], nodes[j]))
+                        non_edge_alpha.append(alpha[i, j])
 
             # Get max alpha
             alpha_max = np.argmax(non_edge_alpha)
@@ -92,7 +100,7 @@ class AlgebraicConnectivity(BaseRewirer):
 
                 # Create G without e_min
                 g_copy = copy.deepcopy(G)
-                g_copy.remove_edge(edges[alpha_min][0],edges[alpha_min][1])
+                g_copy.remove_edge(edges[alpha_min][0], edges[alpha_min][1])
 
                 # Get fiedler value
                 lap_spec = nx.laplacian_spectrum(g_copy)
@@ -108,9 +116,9 @@ class AlgebraicConnectivity(BaseRewirer):
                         raise ValueError("Failed to converge.")
 
             # Remove edge
-            G.remove_edge(edges[alpha_min][0],edges[alpha_min][1])
+            G.remove_edge(edges[alpha_min][0], edges[alpha_min][1])
             # Add edge
-            G.add_edge(non_edges[alpha_max][0],non_edges[alpha_max][1])
+            G.add_edge(non_edges[alpha_max][0], non_edges[alpha_max][1])
 
         # Return new network
         return G
