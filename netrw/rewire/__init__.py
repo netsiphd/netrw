@@ -3,5 +3,6 @@ from .karrer import KarrerRewirer
 from .algebraic_connectivity import AlgebraicConnectivity
 from .networkXEdgeSwap import NetworkXEdgeSwap
 from .global_rewiring import GlobalRewiring
+from .robust_rewiring import RobustRewiring
 
 __all__ = []
