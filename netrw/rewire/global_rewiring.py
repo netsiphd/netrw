@@ -9,15 +9,22 @@ class GlobalRewiring(BaseRewirer):
     Rewire a network where a random edge is chosen and rewired with probability p.
     """
 
-    def global_edge_rewiring(
+    def full_rewire(
         self, G, p, timesteps=-1, tries=100, copy_graph=True, verbose=False
+    ):
+        """
+        Run a single step of the `global_edge_rewiring` function.
+        """
+        return step_rewire(G, p, timesteps, tries, copy_graph, verbose)
+
+
+    def step_rewire(
+        self, G, p, timesteps=1, tries=100, copy_graph=True, verbose=False
     ):
         """
         Generate a Watts-Strogatz network with n nodes where each node is connected
         to its k-nearest neighbors and each edge is rewired with probability p.
-
         This is done with networkx standard implementation.
-
         Parameters:
             G (networkx)
             p (float) - probability of edge rewiring
@@ -25,7 +32,6 @@ class GlobalRewiring(BaseRewirer):
             tries (int) - number of attempts to find a new edge.
             copy_network (bool) - indicator of whether to rewire network copy
             verbose (bool) - indicator to return edges changed at each timestep
-
         Returns:
             G (networkx)
             prev_edges (dict) - edges deleted at each timestep
@@ -44,17 +50,17 @@ class GlobalRewiring(BaseRewirer):
 
         # If verbose save edge changes
         if verbose:
-            prev_edges = {}
-            new_edges = {}
+            removed_edges = {}
+            added_edges = {}
 
         # Give every edge opportunity to change
         if timesteps == -1:
-            timesteps = len(list(G.edges()))
+            timesteps = len(list(G.edges()))*10
 
         # Rewire at each timestep
         for t in range(timesteps):
             # Decide whether to rewire
-            if p < random.random():
+            if p > random.random():
                 # Attempt to rewire
                 valid = False
                 for _ in range(tries):
@@ -90,8 +96,8 @@ class GlobalRewiring(BaseRewirer):
                 else:
                     # Update dictionaries if verbose
                     if verbose:
-                        prev_edges[t] = [edge]
-                        new_edges[t] = [new_edge]
+                        removed_edges[t] = [edge]
+                        added_edges[t] = [new_edge]
 
                     # Update network
                     G.remove_edge(edge[0], edge[1])
