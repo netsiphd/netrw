@@ -17,10 +17,7 @@ class GlobalRewiring(BaseRewirer):
         """
         return step_rewire(G, p, timesteps, tries, copy_graph, verbose)
 
-
-    def step_rewire(
-        self, G, p, timesteps=1, tries=100, copy_graph=True, verbose=False
-    ):
+    def step_rewire(self, G, p, timesteps=1, tries=100, copy_graph=True, verbose=False):
         """
         Generate a Watts-Strogatz network with n nodes where each node is connected
         to its k-nearest neighbors and each edge is rewired with probability p.
@@ -55,7 +52,7 @@ class GlobalRewiring(BaseRewirer):
 
         # Give every edge opportunity to change
         if timesteps == -1:
-            timesteps = len(list(G.edges()))*10
+            timesteps = len(list(G.edges())) * 10
 
         # Rewire at each timestep
         for t in range(timesteps):
