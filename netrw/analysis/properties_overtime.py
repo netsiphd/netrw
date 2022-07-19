@@ -2,6 +2,8 @@ from copy import deepcopy
 import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
+import netrw
+from netrw.rewire import KarrerRewirer, AlgebraicConnectivity, NetworkXEdgeSwap
 
 
 def properties_overtime(init_graph, rewire_method, property1, tmax, numit):
@@ -9,7 +11,7 @@ def properties_overtime(init_graph, rewire_method, property1, tmax, numit):
         Look at network properties as rewiring method changes the network.
         Input: 
         init_graph = original graph that will be rewired
-        rewire_method = method of rewiring that you want to implement, outputs a graph
+        rewire_method = netrw method of rewiring that you want to implement that outputs a graph
         property1 = property of interest, (ex. nx.average_clustering, nx.average_shortest_path_length, etc.) 
                     that outputs a single value for a given network
         tmax = amount of time steps (rewirings)
@@ -18,7 +20,7 @@ def properties_overtime(init_graph, rewire_method, property1, tmax, numit):
         Output: 
         property_dict = dictionary of property values for each iteration for each step of the rewiring process
         fig = plot of mean and standard deviation of property of interest at each step of rewiring process
-    '''
+    ''' 
 
     G0 = deepcopy(init_graph)
     property_dict = {}
@@ -26,7 +28,7 @@ def properties_overtime(init_graph, rewire_method, property1, tmax, numit):
     for i in range(numit):
         property_list = [property1(G0)] # calculate property of initial network
         for j in range(tmax):
-            rewire_method(G0, nswap=1) #rewire 
+            rewire_method.rewire(G0) #rewire 
             property_list.append(property1(G0)) #calculate property of the rewired network
         property_dict[i] = property_list
         
