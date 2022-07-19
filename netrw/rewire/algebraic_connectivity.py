@@ -22,9 +22,7 @@ class AlgebraicConnectivity(BaseRewirer):
     Applied Mathematics and computation 219.10 (2013): 5465-5479.
     """
 
-    def full_rewire(
-        self, G, timesteps=-1, tries=100, copy_graph=True, verbose=False
-    ):
+    def full_rewire(self, G, timesteps=-1, tries=100, copy_graph=True, verbose=False):
         """
         Rewire network to maximize algebraic connectivity. In Sydney et al. paper,
         they find that rewiring 30% of the edges is sufficient.
@@ -69,8 +67,8 @@ class AlgebraicConnectivity(BaseRewirer):
 
         # Check for full rewire
         if timesteps == -1:
-            timesteps = int(.3*len(G.edges()))
-            
+            timesteps = int(0.3 * len(G.edges()))
+
         # Get necessary parameters
         nodes = list(G.nodes())
         edges = list(G.edges())
@@ -136,7 +134,7 @@ class AlgebraicConnectivity(BaseRewirer):
 
             # Update dictionaries
             if verbose:
-                removed_edges[t] = [(edges[alpha_min][0],edges[alpha_min][1])]
+                removed_edges[t] = [(edges[alpha_min][0], edges[alpha_min][1])]
                 added_edges[t] = [(non_edges[alpha_max][0], non_edges[alpha_max][1])]
 
             # Remove edge
