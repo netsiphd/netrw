@@ -42,8 +42,6 @@ def distanceTrajectory(G, distance=netrd.distance.Hamming,
        a dictionary of keyword arguments for the null model (?)
     
     '''
-
-    G0 = copy.deepcopy(G)
     
     # check whether input for num rewire in a number of rewiring steps (int)
     # or a list of steps
@@ -64,6 +62,7 @@ def distanceTrajectory(G, distance=netrd.distance.Hamming,
     distance_function = lambda g1, g2: distfun(g1, g2, **distance_kwargs)
     
     for j in range(num_runs):
+        G0 = copy.deepcopy(G)
         for i in range(max(rewire_steps)):
             rewire_function(G0)
             data[i+1,j] = distance_function(G0, G)
@@ -100,7 +99,9 @@ def plotDistanceTrajectory(G, distance=netrd.distance.Hamming, num_steps=100,
         
     # set line colors
     if linecolors is None:
-        tabcolors = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple']
+        tabcolors = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red', 
+            'tab:purple', 'tab:brown', 'tab:pink', 'tab:gray', 'tab:olive', 
+            'tab:cyan']
         linecolors = [tabcolors[i % len(tabcolors)] for i in range(len(show))]
     elif hasattr(linecolors, "__iter__"):
         if len(linecolors) != len(show):
@@ -125,7 +126,7 @@ def plotDistanceTrajectory(G, distance=netrd.distance.Hamming, num_steps=100,
         elif s=='std-env':
             mean = np.mean(data, axis=1)
             std = np.std(data, axis=1)
-            env_data = [std-mean, std+mean]
+            env_data = [mean-std, mean+std]
         else:
             warnings.warn("Unknown summary statistic", s, "will be ignored.")
             
