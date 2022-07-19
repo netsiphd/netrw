@@ -10,10 +10,12 @@ class BaseRewirer:
         return
 
     def __call__(self, *args, **kwargs):
-        return self.rewire(*args, **kwargs)
+        return self.full_rewire(*args, **kwargs)
 
-    def rewire(self, G, **kwargs):
-        return G
-    
+    # For all rewiring, whether the algorithm is iterative or not. "full" refers to rewiring until an end condition.
+    def full_rewire(self, G, **kwargs):
+        raise NotImplementedError
+
+    # For rewiring algorithms that can implemented iteratively. Iterative algorithms should also implement full_rewire.
     def step_rewire(self, G, **kwargs):
         raise NotImplementedError
