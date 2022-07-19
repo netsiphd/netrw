@@ -1,6 +1,7 @@
 from .base import BaseRewirer
 import networkx as nx
 
+
 class ConnectedWattsStrogatz(BaseRewirer):
     """
     Rewire a ring lattice network of size n with node degree k with probability p.
@@ -35,4 +36,3 @@ class ConnectedWattsStrogatz(BaseRewirer):
             G (networkx)
         """
         return nx.connected_watts_strogatz_graph(n, k, p, tries, seed)
-        
