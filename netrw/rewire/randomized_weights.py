@@ -26,7 +26,7 @@ class RandomizedWeightCM_swap(BaseRewirer):
 
         return e_1, e_2
 
-    def rewire_step(self, G, copy_graph=True):
+    def step_rewire(self, G, copy_graph=True):
         if copy_graph:
             G = copy.deepcopy(G)
 
@@ -40,7 +40,7 @@ class RandomizedWeightCM_swap(BaseRewirer):
 
         return G
 
-    def rewire(self, G, copy_graph=True):
+    def full_rewire(self, G, copy_graph=True):
         if copy_graph:
             G = copy.deepcopy(G)
 
@@ -61,7 +61,7 @@ class RandomizedWeightCM_redistribution(BaseRewirer):
     - rewire: The total sum of weights of all links in the netwrok is randomly distributed over the links
     """
 
-    def rewire_step(self, G, copy_graph=True):
+    def step_rewire(self, G, copy_graph=True):
         if copy_graph:
             G = copy.deepcopy(G)
 
@@ -76,7 +76,7 @@ class RandomizedWeightCM_redistribution(BaseRewirer):
 
         return G
 
-    def rewire(self, G, copy_graph=True):
+    def full_rewire(self, G, copy_graph=True):
         if copy_graph:
             G = copy.deepcopy(G)
 
