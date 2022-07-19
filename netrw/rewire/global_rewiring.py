@@ -1,4 +1,4 @@
-from base import BaseRewirer
+from .base import BaseRewirer
 import copy
 import random
 import warnings
