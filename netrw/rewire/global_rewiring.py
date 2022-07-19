@@ -13,7 +13,7 @@ class GlobalRewiring(BaseRewirer):
         self, G, p, timesteps=-1, tries=100, copy_graph=True, verbose=False
     ):
         """
-        Run a single step of the `global_edge_rewiring` function.
+        Run a full rewire of the global edge rewiring.
         """
         return step_rewire(G, p, timesteps, tries, copy_graph, verbose)
 
