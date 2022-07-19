@@ -19,10 +19,10 @@ class NetworkXEdgeSwap(BaseRewirer):
     """
 
     def rewire(self, G, copy_graph=True):
-        
+
         if copy_graph:
             G = copy.deepcopy(G)
-            
+
         nx.double_edge_swap(G, nswap=1)
 
         return G
