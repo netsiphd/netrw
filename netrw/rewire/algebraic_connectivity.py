@@ -13,7 +13,7 @@ class AlgebraicConnectivity(BaseRewirer):
     computing the Fielder vector of a given network and determining
     the value of alpha for each edge, where v is the Fielder vector
     and alpha_{ij} = |v_i-v_j| is absolute difference of the entries
-    in the Fiedler vector for nodes i and j such that (i,j)\in E(G).
+    in the Fiedler vector for nodes i and j such that (i,j) in E(G).
     The edge with the smallest value of alpha is removed and the non-edge
     with the largest alpha is added.
 
