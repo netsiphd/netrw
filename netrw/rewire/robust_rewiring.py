@@ -1,27 +1,35 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-from .base import BaseRewirer
 import networkx as nx
 import numpy as np
-import copy
 from operator import itemgetter
 import random
+import copy
+from .base import BaseRewirer
+import warnings
 
 
-class RobustRewiring(BaseRewirer):
+class RobustRewirer(BaseRewirer):
     """
     Increases network robustness by building triangles around high degree nodes following algorithm described in:
     Louzada, V. H. P., Daolio, F., Herrmann, H. J., & Tomassini, M. (2013). Smart rewiring for network robustness. Journal of Complex Networks, 1(2), 150–159. https://doi.org/10.1093/comnet/cnt010
+
+    * full_rewire rewires the graph N times
     """
 
-    def robust_rewire(self, G, copy_graph=False, timesteps=1000, step_rewire=False):
+    def step_rewire(
+        self, G, copy_graph=False, timesteps=1, directed=False, verbose=False
+    ):
 
         if copy_graph:
             G = copy.deepcopy(G)
-
-        if step_rewire:
-            timesteps = 1
+        if nx.is_directed(G) and directed is True:
+            warnings.warn(
+                "This algorithm is designed for undirected graphs. The graph input is directed and will be formatted to an undirected graph.",
+                SyntaxWarning,
+            )
+            G = nx.to_undirected(G)
+        if verbose:
+            removed_edges = {}
+            added_edges = {}
 
         for t in range(timesteps):
             A = nx.adjacency_matrix(G)
@@ -35,7 +43,6 @@ class RobustRewiring(BaseRewirer):
                 if len(sorted_degrees) > 1:
                     if sorted_degrees[-2][1] > 1 and sorted_degrees[-1][1] > 1:
                         neighbors.append(i)
-
             index_i = neighbors[random.randint(0, len(neighbors) - 1)]
             sorted_degrees_i = sorted(
                 list(degree_list(np.nonzero(A[index_i, :])[1])), key=itemgetter(1)
@@ -72,4 +79,15 @@ class RobustRewiring(BaseRewirer):
                 G.add_edge(index_k, index_j)
                 G.add_edge(index_m, index_n)
 
+        if verbose:
+            return G, removed_edges, added_edges
+        else:
+            return G
+
+    def full_rewire(
+        self, G, copy_graph=False, timesteps=-1, directed=False, verbose=False
+    ):
+        if timesteps == -1:
+            timesteps = int(len(G.nodes()))
+        G = self.step_rewire(G, copy_graph, timesteps, directed, verbose)
         return G

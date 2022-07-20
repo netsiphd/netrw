@@ -14,7 +14,7 @@ def plot_property_values_over_time(propvals, ylabel=""):
         2d numpy array of output values from dictionary of properties_overtime.
         The network property is calculated at each step and iteration of the rewiring process. Rows are single iteration over a rewiring process.
         Columns show different iterations of the rewiring process from the initial graph.
-        
+
     ylabel: string, optional
         Label for y axis of graph for mean and standard deviation of network property
         Default is no label.
@@ -25,12 +25,12 @@ def plot_property_values_over_time(propvals, ylabel=""):
         Figure of mean and standard deviation for a network property throughout the rewiring process.
 
     """
-    
+
     alllist = []  # list of all properties for all iterations at each of the time steps
-    
+
     valarray = propvals
     num_rows, num_cols = valarray.shape
-        
+
     for k in range(num_cols):
         alllist.append([])
         for l in range(num_rows):
@@ -54,7 +54,9 @@ def plot_property_values_over_time(propvals, ylabel=""):
     ax0.plot(range(num_cols), meanlist, color="blue", linewidth=2)
     ax0.plot(range(num_cols), upperbd, color="blue")
     ax0.plot(range(num_cols), lowerbd, color="blue")
-    ax0.fill_between(range(num_cols), upperbd, lowerbd, color="cornflowerblue", alpha=0.5)
+    ax0.fill_between(
+        range(num_cols), upperbd, lowerbd, color="cornflowerblue", alpha=0.5
+    )
 
     ax0.set_xlabel("number of rewiring steps")
     ax0.set_ylabel(ylabel)
