@@ -8,5 +8,7 @@ from .randomized_weights import RandomizedWeightCM_swap
 from .randomized_weights import RandomizedWeightCM_redistribution
 from .robust_rewiring import RobustRewirer
 from .spatial_small_worlds import SpatialSmallWorld
+from .assortative_local_maximization import AssortativityLocalMaximum
+from .assortative_local_minimization import AssortativityLocalMinimum
 
 __all__ = []
