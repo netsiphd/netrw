@@ -43,26 +43,26 @@ def various_properties_overtime(
 
         all_properties[name] = np.zeros((numit, tmax))
 
-        # loop over rewiring instances
-        for i in range(numit):
+    # loop over rewiring instances
+    for i in range(numit):
 
-            G0 = deepcopy(init_graph)
+        G0 = deepcopy(init_graph)
 
-            # calculate properties of initial network
-            for name, func in zip(property_functions, function_names):
+        # calculate properties of initial network
+        for func, name in zip(property_functions, function_names):
 
-                all_properties[name][i, 0] = func(G0)
+            all_properties[name][i, 0] = func(G0)
 
-            # loop over timesteps
-            for j in range(1, tmax):
+        # loop over timesteps
+        for j in range(1, tmax):
 
-                G0 = rw.step_rewire(G0, copy_graph=False)  # rewire
+            G0 = rw.step_rewire(G0, copy_graph=False)  # rewire
 
-                # calculate properties of the rewired network
+            # calculate properties of the rewired network
 
-                for name, func in zip(property_functions, function_names):
+            for name, func in zip(function_names, property_functions):
 
-                    all_properties[name][i, j] = func(G0)
+                all_properties[name][i, j] = func(G0)
 
         return all_properties
 
@@ -150,7 +150,8 @@ property_functions = [
     lambda G: average_shortest_path_length(G),
     lambda G: nx.number_connected_components(G),
     lambda G: nx.assortativity.degree_assortativity_coefficient(G),
-    lambda G: np.sum(np.array(list(dict(nx.degree(G)).values())) ** 2) / n,
+    lambda G: np.sum(np.array(list(dict(nx.degree(G)).values())) ** 2)
+    / G.number_of_nodes(),
     lambda G: np.min(np.array(list(dict(nx.degree(G)).values()))),
     lambda G: np.max(np.array(list(dict(nx.degree(G)).values()))),
     lambda G: average_local_clustering(G),
@@ -171,9 +172,19 @@ function_names = [
 
 # test run
 init_graph = nx.fast_gnp_random_graph(100, 0.03)
-rewire_method = KarrerRewirer
+rewire_method = NetworkXEdgeSwap
 tmax = 100
 numit = 10
 all_properties = various_properties_overtime(
     init_graph, rewire_method, property_functions, function_names, tmax, numit
 )
+
+
+# test plot
+for name in function_names:
+    fi, ax = plt.subplots(1, figsize=(5, 2), dpi=200)
+    plt.plot(range(tmax), np.mean(all_properties[name], axis=0))
+    plt.title(name)
+    plt.xlabel("$t$")
+    plt.tight_layout()
+    plt.savefig("figures/" + name)
