@@ -14,7 +14,7 @@ class DkRewire(BaseRewirer):
 
     Orsini, C. et al. Quantifying randomness in real networks. Nat. Commun. 6:8627 doi: 10.1038/ncomms9627 (2015).
     """
-    def step_rewire(self,G,d,copy_graph=True,timesteps=1,tries=1000,directed=False,verbose=False):
+    def step_rewire(self,G,d,copy_graph=False,timesteps=1,tries=1000,directed=False,verbose=False):
         """
         This function calls the necessary function to rewire such that the
         'd'k-distribution is preserved for given d. This function is implemented
@@ -242,5 +242,3 @@ class DkRewire(BaseRewirer):
             valid = False
             for _ in range(tries):
                 # Choose an edge end at random
-                
-
