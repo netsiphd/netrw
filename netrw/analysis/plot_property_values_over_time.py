@@ -44,10 +44,10 @@ def plot_property_values_over_time(propvals, ylabel = '' ):
         lowerbd.append(meanlist[a]-sdlist[a])
 
     fig, (ax0) = plt.subplots(nrows=1)
-    ax0.plot(range(len(propvals[0])), meanlist, color = 'blue')
+    ax0.plot(range(len(propvals[0])), meanlist, color = 'blue', linewidth = 2)
     ax0.plot(range(len(propvals[0])), upperbd, color = 'blue')
     ax0.plot(range(len(propvals[0])), lowerbd, color = 'blue')
-    ax0.fill_between(range(len(propvals[0])),upperbd, lowerbd, color = 'cornflowerblue')
+    ax0.fill_between(range(len(propvals[0])),upperbd, lowerbd, color = 'cornflowerblue', alpha =0.5)
 
     ax0.set_xlabel('number of rewiring steps')
     ax0.set_ylabel(ylabel)
