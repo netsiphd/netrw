@@ -15,12 +15,7 @@ def test_same_return_type():
     iterations = len(G.nodes()) * 100
     for _ in range(iterations):
         new_graph = rewirer.rewire(G, 0.5)
-
-        new_degree = [
-            new_graph.degree()[i] if i in new_graph.nodes() else 0
-            for i in range(G.number_of_nodes())
-        ]
-        avg_degree += np.array(new_degree)
+        avg_degree += np.array([degree for node, degree in new_graph.degree()])
 
     avg_degree /= iterations
 
