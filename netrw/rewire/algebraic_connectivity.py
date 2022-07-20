@@ -23,7 +23,7 @@ class AlgebraicConnectivity(BaseRewirer):
     """
 
     def full_rewire(
-        self, G, timesteps=-1, copy_graph=True, directed=False, verbose=False
+        self, G, timesteps=-1, copy_graph=True, directed=True, verbose=False
     ):
         """
         Rewire network to maximize algebraic connectivity. In Sydney et al. paper,
@@ -32,7 +32,7 @@ class AlgebraicConnectivity(BaseRewirer):
         return self.step_rewire(G, timesteps, copy_graph, directed, verbose)
 
     def step_rewire(
-        self, G, timesteps=1, copy_graph=False, directed=False, verbose=False
+        self, G, timesteps=1, copy_graph=False, directed=True, verbose=False
     ):
         """
         Rewire ``timesteps`` edges to maximize algebraic connectivity.
@@ -50,17 +50,17 @@ class AlgebraicConnectivity(BaseRewirer):
         if copy_graph:
             G = copy.deepcopy(G)
 
-        if not nx.is_connected(G):
-            raise ValueError(
-                "Disconnected graph. This method is implemented for undirected, connected graphs."
-            )
-
         if nx.is_directed(G) and directed is True:
             warnings.warn(
                 "This algorithm is designed for undirected graphs. The graph input is directed and will be formatted to an undirected graph.",
                 SyntaxWarning,
             )
-            G = nx.to_undirected(G)
+            G = nx.Graph(G)
+
+        if not nx.is_connected(G):
+            raise ValueError(
+                "Disconnected graph. This method is implemented for undirected, connected graphs."
+            )
 
         # Initialize storing dictionaries if necessary
         if verbose:
