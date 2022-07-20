@@ -52,7 +52,7 @@ class GlobalRewiring(BaseRewirer):
 
         # Give every edge opportunity to change
         if timesteps == -1:
-            timesteps = len(list(G.edges()))*10
+            timesteps = len(list(G.edges())) * 10
 
         # Rewire at each timestep
         for t in range(timesteps):
