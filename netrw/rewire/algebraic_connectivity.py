@@ -1,4 +1,4 @@
-from base import BaseRewirer
+from .base import BaseRewirer
 import networkx as nx
 import numpy as np
 import copy
