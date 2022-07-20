@@ -1,4 +1,3 @@
-
 import networkx as nx
 import numpy as np
 from operator import itemgetter
@@ -72,6 +71,9 @@ class RobustRewirer(BaseRewirer):
                 G.remove_edge(index_k,index_n)
                 G.add_edge(index_k,index_j)
                 G.add_edge(index_m,index_n)
+            if verbose:
+                removed_edges[t] = [(index_j,index_m),(index_k,index_n)]
+                added_edges[t] = [(index_k,index_j),(index_m,index_n)]
 ​
         if verbose:
             return G, removed_edges, added_edges
