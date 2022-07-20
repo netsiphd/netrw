@@ -67,4 +67,4 @@ def properties_overtime(init_graph, rewire_method, property1, tmax, numit):
         upperbd.append(meanlist[a]+sdlist[a])
         lowerbd.append(meanlist[a]-sdlist[a])
 
-    return property_dict
+    return property_dict 
