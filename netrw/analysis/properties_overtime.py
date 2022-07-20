@@ -8,9 +8,9 @@ from netrw.rewire import KarrerRewirer, AlgebraicConnectivity, NetworkXEdgeSwap
 
 def properties_overtime(init_graph, rewire_method, property1, tmax, numit):
     """
-    Analyze the property values of a network as a function of rewire steps. 
+    Analyze the property values of a network as a function of rewire steps.
     Looks at how a network property changes as a rewiring process occurs.
-    
+
     Parameters
     ----------
     init_graph : NetworkX graph
@@ -18,12 +18,12 @@ def properties_overtime(init_graph, rewire_method, property1, tmax, numit):
     rewire_method : netrw rewire class object
         Algorithm for rewiring a network with step_rewire option
     property1 : NetworkX function
-        Network description property that outputs a single value for a given network. Should work with any function that 
-        summarizes a NetworkX graph object into a single value. For example, nx.average_clustering, nx.average_shortest_path_length, etc. 
+        Network description property that outputs a single value for a given network. Should work with any function that
+        summarizes a NetworkX graph object into a single value. For example, nx.average_clustering, nx.average_shortest_path_length, etc.
     tmax : int
-        Number of rewiring steps to perform for each iteration. 
+        Number of rewiring steps to perform for each iteration.
     numit : int
-        Number of rewiring iterations to perform on the initial graph. The given rewiring process will be performed numit 
+        Number of rewiring iterations to perform on the initial graph. The given rewiring process will be performed numit
         times on the initial graph to look at the distribution of outcomes for this rewiring process on the initial graph.
     Returns
     -------
@@ -32,26 +32,27 @@ def properties_overtime(init_graph, rewire_method, property1, tmax, numit):
         at each step of the rewiring process.
 
     """
-     
+
     property_dict = {}
     rw = rewire_method()
 
     for i in range(numit):
         G0 = deepcopy(init_graph)
-        property_list = [property1(G0)] # calculate property of initial network
+        property_list = [property1(G0)]  # calculate property of initial network
         for j in range(tmax):
-            G0 = rw.step_rewire(G0, copy_graph=False) #rewire 
-            property_list.append(property1(G0)) #calculate property of the rewired network
+            G0 = rw.step_rewire(G0, copy_graph=False)  # rewire
+            property_list.append(
+                property1(G0)
+            )  # calculate property of the rewired network
         property_dict[i] = property_list
-        
-    
-    alllist = [] # list of all properties for all iterations at each of the time steps
+
+    alllist = []  # list of all properties for all iterations at each of the time steps
     for k in range(tmax):
         alllist.append([])
         for l in range(numit):
             alllist[k].append(property_dict[l][k])
-            
-    # find mean and standard deviation over different iterations of rewiring process        
+
+    # find mean and standard deviation over different iterations of rewiring process
     meanlist = []
     sdlist = []
     for k in range(tmax):
@@ -62,7 +63,7 @@ def properties_overtime(init_graph, rewire_method, property1, tmax, numit):
     upperbd = []
     lowerbd = []
     for a in range(len(meanlist)):
-        upperbd.append(meanlist[a]+sdlist[a])
-        lowerbd.append(meanlist[a]-sdlist[a])
+        upperbd.append(meanlist[a] + sdlist[a])
+        lowerbd.append(meanlist[a] - sdlist[a])
 
-    return property_dict 
+    return property_dict

@@ -1,7 +1,10 @@
 from copy import deepcopy
 import numpy as np
 
-def get_property_distribution(G, rewiring_method, property, skip=10, num_samples=1000, **kwargs):
+
+def get_property_distribution(
+    G, rewiring_method, property, skip=10, num_samples=1000, **kwargs
+):
     """_summary_
 
     More details

@@ -1,6 +1,9 @@
 import numpy as np
 
-def rewiring_distance_confusion_matrix(G, rewiring_methods, distance_measures, timesteps=100, ensemble_size=10):
+
+def rewiring_distance_confusion_matrix(
+    G, rewiring_methods, distance_measures, timesteps=100, ensemble_size=10
+):
     """Plotting distances from start graph for different rewiring schemes and distance metrics
 
     Parameters
@@ -14,7 +17,7 @@ def rewiring_distance_confusion_matrix(G, rewiring_methods, distance_measures, t
     distance_measures : netrd Distance
         metric for measuring the distance between the before and after graphs
     timesteps : int, default: 100
-        the number of iterations 
+        the number of iterations
     ensemble_size : int, default: 10
         the number of rewiring trajectories to run.
 
@@ -38,5 +41,5 @@ def rewiring_distance_confusion_matrix(G, rewiring_methods, distance_measures, t
             dist = distance_measures[i]()
             for k in range(ensemble_size):
                 rG = rw.full_rewire(G, timesteps=timesteps)
-                C[i, j] += dist(rG, G)/ensemble_size
+                C[i, j] += dist(rG, G) / ensemble_size
     return C
