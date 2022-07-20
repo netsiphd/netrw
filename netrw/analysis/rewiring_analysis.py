@@ -6,7 +6,9 @@ import netrw
 from netrw.rewire import KarrerRewirer, AlgebraicConnectivity, NetworkXEdgeSwap
 
 
-def various_properties_overtime(init_graph, rewire_method, property_functions, function_names, tmax, numit):
+def various_properties_overtime(
+    init_graph, rewire_method, property_functions, function_names, tmax, numit
+):
     """
     Analyze the property values of a network as a function of rewire steps.
     Looks at how a network property changes as a rewiring process occurs.
@@ -39,29 +41,28 @@ def various_properties_overtime(init_graph, rewire_method, property_functions, f
 
     for name in function_names:
 
-        all_properties[name] = np.zeros((numit,tmax))
+        all_properties[name] = np.zeros((numit, tmax))
 
         # loop over rewiring instances
         for i in range(numit):
 
             G0 = deepcopy(init_graph)
 
-             # calculate properties of initial network
-            for name,func in zip(property_functions,function_names):
+            # calculate properties of initial network
+            for name, func in zip(property_functions, function_names):
 
-                all_properties[name][i,0] = func(G0)
-
+                all_properties[name][i, 0] = func(G0)
 
             # loop over timesteps
-            for j in range(1,tmax):
+            for j in range(1, tmax):
 
-                G0 = rw.step_rewire(G0, copy_graph=False) #rewire
+                G0 = rw.step_rewire(G0, copy_graph=False)  # rewire
 
                 # calculate properties of the rewired network
 
-                for name,func in zip(property_functions,function_names):
+                for name, func in zip(property_functions, function_names):
 
-                    all_properties[name][i,j] = func(G0)
+                    all_properties[name][i, j] = func(G0)
 
         return all_properties
 
@@ -87,14 +88,14 @@ def calculate_statistics(all_properties):
     all_lowers = {}
     all_uppers = {}
 
-    for name,data in all_properties.items():
+    for name, data in all_properties.items():
 
-        all_means[name] = np.mean(data,axis=0)
-        all_stds[name] = np.std(data,axis=0)
-        all_lowers[name] = all_means[name]-all_stds[name]
-        all_uppers[name] = all_means[name]+all_stds[name]
+        all_means[name] = np.mean(data, axis=0)
+        all_stds[name] = np.std(data, axis=0)
+        all_lowers[name] = all_means[name] - all_stds[name]
+        all_uppers[name] = all_means[name] + all_stds[name]
 
-    return all_means,all_stds,all_lowers,all_uppers
+    return all_means, all_stds, all_lowers, all_uppers
 
 
 def average_local_clustering(G):
@@ -107,15 +108,16 @@ def average_local_clustering(G):
     """
     # get degrees and find how many nodes have degree at least 2
     k = np.array(list(dict(nx.degree(G)).values()))
-    n_kg1 = np.sum(k>1)
+    n_kg1 = np.sum(k > 1)
 
     # find and sum up local clustering coefficient of all nodes
     clu = nx.clustering(G)
     tot = np.sum(list(nx.clustering(G).values()))
 
     # calculate average
-    barc = tot/n_kg1
+    barc = tot / n_kg1
     return barc
+
 
 def average_shortest_path_length(G):
     """
@@ -127,43 +129,51 @@ def average_shortest_path_length(G):
     """
     # find the sizes of connected components
     C = list(nx.connected_components(G))
-    Nv = list(map(len,C))
+    Nv = list(map(len, C))
 
     # calculate the total number of shortest paths
-    Npairs = np.sum([N*(N-1)/2 for N in Nv])
+    Npairs = np.sum([N * (N - 1) / 2 for N in Nv])
 
     # sum up all shortest path lengths
-    total = np.sum([np.sum(list(v[1].values())) for v in nx.all_pairs_shortest_path_length(G)])
+    total = np.sum(
+        [np.sum(list(v[1].values())) for v in nx.all_pairs_shortest_path_length(G)]
+    )
 
     # calculate average
-    barl = total/Npairs
+    barl = total / Npairs
     return barl
 
 
-property_functions = [lambda G: G.number_of_nodes(),
-                 lambda G: G.number_of_edges(),
-                 lambda G: average_shortest_path_length(G),
-                 lambda G: nx.number_connected_components(G),
-                 lambda G: nx.assortativity.degree_assortativity_coefficient(G),
-                 lambda G: np.sum(np.array(list(dict(nx.degree(G)).values()))**2)/n,
-                 lambda G: np.min(np.array(list(dict(nx.degree(G)).values()))),
-                 lambda G: np.max(np.array(list(dict(nx.degree(G)).values()))),
-                 lambda G: average_local_clustering(G)]
+property_functions = [
+    lambda G: G.number_of_nodes(),
+    lambda G: G.number_of_edges(),
+    lambda G: average_shortest_path_length(G),
+    lambda G: nx.number_connected_components(G),
+    lambda G: nx.assortativity.degree_assortativity_coefficient(G),
+    lambda G: np.sum(np.array(list(dict(nx.degree(G)).values())) ** 2) / n,
+    lambda G: np.min(np.array(list(dict(nx.degree(G)).values()))),
+    lambda G: np.max(np.array(list(dict(nx.degree(G)).values()))),
+    lambda G: average_local_clustering(G),
+]
 
-function_names = ['Number of nodes',
-         'Number of edges',
-         'Average shortest path length',
-         'Number of components',
-         'Degree correlation coefficient',
-         'Second moment of degree distribution',
-         'Minimum degree',
-         'Maximum degree',
-         'Average local clustering coefficient']
+function_names = [
+    "Number of nodes",
+    "Number of edges",
+    "Average shortest path length",
+    "Number of components",
+    "Degree correlation coefficient",
+    "Second moment of degree distribution",
+    "Minimum degree",
+    "Maximum degree",
+    "Average local clustering coefficient",
+]
 
 
 # test run
-init_graph = nx.fast_gnp_random_graph(100,0.03)
+init_graph = nx.fast_gnp_random_graph(100, 0.03)
 rewire_method = KarrerRewirer
 tmax = 100
 numit = 10
-all_properties = various_properties_overtime(init_graph, rewire_method, property_functions, function_names, tmax, numit)
+all_properties = various_properties_overtime(
+    init_graph, rewire_method, property_functions, function_names, tmax, numit
+)
