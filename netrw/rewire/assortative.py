@@ -5,7 +5,7 @@ import networkx as nx
 import numpy as np
 
 
-class AssortativeRewirer(BaseRewirer):
+class DegreeAssortativeRewirer(BaseRewirer):
 
     """
         Do degree-preserving rewiring that increases/decreases assortativity
@@ -14,64 +14,67 @@ class AssortativeRewirer(BaseRewirer):
 
     """
 
-    def step_rewire(self, G, p=0.5, assortative=True, copy_graph=True):
+    def step_rewire(self, G, p=0.5, assortative=True, copy_graph=True, verbose=False):
 
-        """     
+        """
         Inputs:
             p (float) -- the probability of making the swap be in favor of
-                            increasing/decreasing assortativity. Otherwise, 
+                            increasing/decreasing assortativity. Otherwise,
                             the swap is of the form (i,j),(k,l)-->(i,l),(j,k).
-                            
+
             assortative (bool) -- if assortative==True, the non-random swaps
                                     favor increasing assortativity. Otherwise,
-                                    they favor increasing disassortativity.        
+                                    they favor increasing disassortativity.
         """
 
         if copy_graph:
             G = copy.deepcopy(G)
 
-        # initialize nodes for swap
-        i, j, k, l = -1, -1, -1, -1
+        (i, j), (k, l) = random.sample(list(G.edges), 2)
 
-        # loop until all four nodes involved in the swap are distinct
-        while len(set([i, j, k, l])) != 4:
+        # repeat until a valid rewiring is found
+        valid = False
+        while not valid:
 
-            i, j = random.choice(list(G.edges))
-            k, l = random.choice(list(G.edges))
+            if np.random.rand() <= p:
 
-            if len(set([i, j, k, l])) == 4:
+                # degree-sorting for edge-swap with probability p
+                sor = sorted([i, j, k, l], key=lambda y: G.degree[y])
 
-                if np.random.rand() <= p:
-
-                    # degree-sorting for edge-swap with probability p
-                    sor = sorted([i, j, k, l], key=lambda y: G.degree[y])
-
-                    if assortative:
-                        I, J, K, L = sor
-                    else:
-                        I, J, K, L = sor[0], sor[3], sor[1], sor[2]
-
+                if assortative:
+                    I, J, K, L = sor
                 else:
+                    I, J, K, L = sor[0], sor[3], sor[1], sor[2]
 
-                    # standard edge-swap with probability 1-p
-                    I, J, K, L = i, l, j, k
+            else:
 
-                # make sure new edges aren't already there
-                if (not G.has_edge(I, J)) and (not G.has_edge(K, L)):
+                # standard edge-swap with probability 1-p
+                I, J, K, L = i, l, j, k
 
-                    # remove previous edge
-                    G.remove_edge(i, j)
-                    G.remove_edge(k, l)
-                    G.add_edge(I, J)
-                    G.add_edge(K, L)
+            # make sure new edges aren't already there
+            if (not G.has_edge(I, J)) and (not G.has_edge(K, L)):
+                valid = True
 
-                else:
-                    i, j, k, l = -1, -1, -1, -1
+                # remove previous edge
+                G.remove_edge(i, j)
+                G.remove_edge(k, l)
+                G.add_edge(I, J)
+                G.add_edge(K, L)
+
+            if verbose:
+                removed_edges = [(i, j), (k, l)]
+                added_edges = [(I, J), (K, L)]
+
+        if verbose:
+            return G, removed_edges, added_edges
+        else:
+            return G
+
+    def full_rewire(self, G, timesteps=1000, p=0.5, assortative=True, copy_graph=True):
+        """
+        Runs step_rewire for a number of steps (default 1000 for no reason)
+        """
+        for t in range(T):
+            G = self.step_rewire(G, p=p, assortative=assortative, copy_graph=copy_graph)
 
         return G
-
-    def full_rewire(self, G, p=0.5, assortative=True, copy_graph=True):
-        """
-        Not implemented
-        """
-        raise NotImplementedError
