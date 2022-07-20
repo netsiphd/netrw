@@ -30,9 +30,7 @@ def properties_overtime(init_graph, rewire_method, property1, tmax, numit):
     property_dict: dictionary
         Dictionary of output where the keys are the iteration number and the values are a list of the network property calculated
         at each step of the rewiring process.
-    fig: matplotlib figure
-        Plot of the mean value of the given network property at each step of the rewiring process, where shading within 
-        the upper and lower bounds represent the standard deviation of the property value around the mean. 
+
     """
      
     property_dict = {}
