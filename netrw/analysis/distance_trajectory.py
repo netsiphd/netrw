@@ -10,13 +10,10 @@ def distanceTrajectory(
     G,
     distance=netrd.distance.Hamming,
     rewire=NetworkXEdgeSwap,
-    null_model=None,
     num_steps=100,
     num_runs=100,
     distance_kwargs={},
     rewire_kwargs={},
-    null_model_kwargs={},
-    **kwargs
 ):
     """
     Get some data on graph distances as a function of number of rewiring steps.
@@ -28,8 +25,6 @@ def distanceTrajectory(
     distance : netrd graph distance class
 
     rewire : netrw rewire class
-
-    null_model : ???
 
     num_steps : integer or list
        number of rewiring steps to be tracked or ordered list of rewiring
@@ -46,18 +41,14 @@ def distanceTrajectory(
     rewire_kwargs : dictionary
        a dictionary of keyword arguments for an instantiation of
        the netrw rewire class
-
-    null_model_kwargs : dictionary
-       a dictionary of keyword arguments for the null model (?)
-
     """
 
     G0 = copy.deepcopy(G)
 
     # check whether input for num rewire in a number of rewiring steps (int)
     # or a list of steps
-    if hasattr(num_steps, "__iter__"):
-        rewire_steps = num_rewire
+    if isinstance(num_steps, list):
+        rewire_steps = num_steps
     else:
         rewire_steps = range(num_steps)
 
