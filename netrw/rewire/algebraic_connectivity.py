@@ -22,15 +22,17 @@ class AlgebraicConnectivity(BaseRewirer):
     Applied Mathematics and computation 219.10 (2013): 5465-5479.
     """
 
-    def full_rewire(self, G, timesteps=-1, tries=100, copy_graph=True, verbose=False):
+    def full_rewire(
+        self, G, timesteps=-1, copy_graph=True, directed=False, verbose=False
+    ):
         """
         Rewire network to maximize algebraic connectivity. In Sydney et al. paper,
         they find that rewiring 30% of the edges is sufficient.
         """
-        return self.step_rewire(G, p, timesteps, tries, copy_graph, verbose)
+        return self.step_rewire(G, timesteps, copy_graph, directed, verbose)
 
     def step_rewire(
-        self, G, timesteps=1, copy_graph=True, directed=False, verbose=False
+        self, G, timesteps=1, copy_graph=False, directed=False, verbose=False
     ):
         """
         Rewire ``timesteps`` edges to maximize algebraic connectivity.
@@ -38,14 +40,14 @@ class AlgebraicConnectivity(BaseRewirer):
         Parameters:
             G (networkx)
             timesteps (int) - number of edge rewires
-            copy_network (bool) - return a copy of the network
+            copy_graph (bool) - return a copy of the network
             directed (bool) - compute for directed network on undirected copy
             verbose (bool) - indicator to return edges changed at each timestep
 
         Return:
             G (networkx)
         """
-        if copy_network:
+        if copy_graph:
             G = copy.deepcopy(G)
 
         if not nx.is_connected(G):
