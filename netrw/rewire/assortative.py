@@ -74,7 +74,7 @@ class DegreeAssortativeRewirer(BaseRewirer):
         """
         Runs step_rewire for a number of steps (default 1000 for no reason)
         """
-        for t in range(T):
+        for t in range(timesteps):
             G = self.step_rewire(G, p=p, assortative=assortative, copy_graph=copy_graph)
 
         return G
