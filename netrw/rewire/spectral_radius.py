@@ -45,9 +45,8 @@ class SpectralRadius(BaseRewirer):
         timestep = 0
 
         # create arrays for add/remove edges
-        if verbose:
-            added_edges = {}
-            removed_edges = {}
+        added_edges = {}
+        removed_edges = {}
 
         # while loop to attempt improvements
         while temp_max < criteria and timestep <= maxiter:
@@ -56,11 +55,13 @@ class SpectralRadius(BaseRewirer):
             G, added_edge, removed_edge, temp_max, delta = self.step_rewire(G, baseline_max, verbose=True)
             if baseline_max + delta > baseline_max:
                 baseline_max += delta
-                added_edges[timestep] = added_edge
-                removed_edges[timestep] = removed_edge
+                if verbose:
+                    added_edges[timestep] = added_edge
+                    removed_edges[timestep] = removed_edge
             else:
-                added_edges[timestep] = []
-                removed_edges[timestep] = []
+                if verbose:
+                    added_edges[timestep] = []
+                    removed_edges[timestep] = []
 
         improvement = temp_max - init_max
         if verbose:
@@ -129,7 +130,7 @@ class SpectralRadius(BaseRewirer):
         # rewire
         G.remove_edges_from([old_edge])
         G.add_edges_from([new_edge])
-        print(np.mean(list(dict(G.degree()).values())), G.number_of_nodes(), G.number_of_edges())
+        # print(np.mean(list(dict(G.degree()).values())), G.number_of_nodes(), G.number_of_edges())
         if verbose:
             added_edge = [new_edge]
             removed_edge = [old_edge]
