@@ -6,5 +6,6 @@ from .assortative import DegreeAssortativeRewirer
 from .algebraic_connectivity import AlgebraicConnectivity
 from .randomized_weights import RandomizedWeightCM_swap
 from .randomized_weights import RandomizedWeightCM_redistribution
+from .robust_rewiring import RobustRewirer
 
 __all__ = []
