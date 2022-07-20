@@ -1,8 +1,10 @@
-from . import BaseRewirer
 import copy
 import itertools as it
 import random
+
 import networkx as nx
+
+from . import BaseRewirer
 
 
 class NetworkXEdgeSwap(BaseRewirer):

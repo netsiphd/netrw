@@ -1,9 +1,11 @@
 from copy import deepcopy
-import numpy as np
-import networkx as nx
+
 import matplotlib.pyplot as plt
+import networkx as nx
+import numpy as np
+
 import netrw
-from netrw.rewire import KarrerRewirer, AlgebraicConnectivity, NetworkXEdgeSwap
+from netrw.rewire import AlgebraicConnectivity, KarrerRewirer, NetworkXEdgeSwap
 
 
 def properties_overtime(init_graph, rewire_method, property1, tmax, numit):

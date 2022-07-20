@@ -1,8 +1,10 @@
-from . import BaseRewirer
 import copy
 import random
+
 import networkx as nx
 import numpy as np
+
+from . import BaseRewirer
 
 
 class LocalEdgeRewiring(BaseRewirer):

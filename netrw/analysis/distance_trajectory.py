@@ -1,8 +1,11 @@
-from matplotlib import pyplot as plt
+import copy
+import warnings
+
+import netrd
 import networkx as nx
 import numpy as np
-import warnings, copy
-import netrd
+from matplotlib import pyplot as plt
+
 from ..rewire import NetworkXEdgeSwap
 
 

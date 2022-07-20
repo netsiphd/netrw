@@ -1,7 +1,8 @@
-from .base import BaseRewirer
 import copy
 import random
 import warnings
+
+from .base import BaseRewirer
 
 
 class GlobalRewiring(BaseRewirer):

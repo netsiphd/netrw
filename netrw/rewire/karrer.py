@@ -1,7 +1,9 @@
-from . import BaseRewirer
 import copy
+
 import networkx as nx
 import numpy as np
+
+from . import BaseRewirer
 
 
 class KarrerRewirer(BaseRewirer):

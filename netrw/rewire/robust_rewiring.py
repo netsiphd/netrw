@@ -1,10 +1,12 @@
+import copy
+import random
+import warnings
+from operator import itemgetter
+
 import networkx as nx
 import numpy as np
-from operator import itemgetter
-import random
-import copy
+
 from .base import BaseRewirer
-import warnings
 
 
 class RobustRewirer(BaseRewirer):

@@ -1,9 +1,11 @@
-from .base import BaseRewirer
 import copy
 import itertools as it
 import random
+
 import networkx as nx
 import numpy as np
+
+from .base import BaseRewirer
 
 
 class RandomizedWeightCM_swap(BaseRewirer):

@@ -1,16 +1,18 @@
-from . import BaseRewirer
 import copy
 import random
+
 import networkx as nx
 import numpy as np
+
+from . import BaseRewirer
 
 
 class DegreeAssortativeRewirer(BaseRewirer):
 
     """
-        Do degree-preserving rewiring that increases/decreases assortativity
-        as described in CHANGING CORRELATIONS IN NETWORKS: ASSORTATIVITY AND DISSORTATIVITY,
-        R. Xulvi-Brunet and I.M. Sokolov
+    Do degree-preserving rewiring that increases/decreases assortativity
+    as described in CHANGING CORRELATIONS IN NETWORKS: ASSORTATIVITY AND DISSORTATIVITY,
+    R. Xulvi-Brunet and I.M. Sokolov
 
     """
 
@@ -70,7 +72,9 @@ class DegreeAssortativeRewirer(BaseRewirer):
         else:
             return G
 
-    def full_rewire(self, G, timesteps=1000, p=0.5, assortative=True, copy_graph=True, verbose=False):
+    def full_rewire(
+        self, G, timesteps=1000, p=0.5, assortative=True, copy_graph=True, verbose=False
+    ):
         """
         Runs step_rewire for a number of steps (default 1000 for no reason)
         """
@@ -78,11 +82,15 @@ class DegreeAssortativeRewirer(BaseRewirer):
             removed_edges = {}
             added_edges = {}
             for t in range(timesteps):
-                G,removed,added = self.step_rewire(G, p=p, assortative=assortative, copy_graph=copy_graph,verbose=True)
+                G, removed, added = self.step_rewire(
+                    G, p=p, assortative=assortative, copy_graph=copy_graph, verbose=True
+                )
                 removed_edges[t] = removed
                 added_edges[t] = added
         else:
             for t in range(timesteps):
-                G = self.step_rewire(G, p=p, assortative=assortative, copy_graph=copy_graph)
+                G = self.step_rewire(
+                    G, p=p, assortative=assortative, copy_graph=copy_graph
+                )
 
         return G

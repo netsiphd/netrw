@@ -1,9 +1,11 @@
-from .base import BaseRewirer
+import copy
+import warnings
+
 import networkx as nx
 import numpy as np
-import copy
 from scipy import linalg as la
-import warnings
+
+from .base import BaseRewirer
 
 
 class AlgebraicConnectivity(BaseRewirer):
