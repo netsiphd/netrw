@@ -242,3 +242,4 @@ class DkRewire(BaseRewirer):
             valid = False
             for _ in range(tries):
                 # Choose an edge end at random
+                
