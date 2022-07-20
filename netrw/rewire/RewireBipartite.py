@@ -34,8 +34,21 @@ class RewireBipartite(BaseRewirer):
 
     # Single step: Stochastic
     # This method may return the same graph
-    def step_rewire(self, G):
+    def step_rewire(self, G, verbose = False):
         self.step_rewire_flag = False
+        
+        #check if still bipartite 
+        if bipartite.is_bipartite(G) == False:
+
+            if verbose == True:
+                warnings.warn(
+                    "This algorithm is designed for bipartite graphs.",
+                    SyntaxWarning,
+                )
+
+            self.bipartite_flag = False
+
+            return G
 
         edges = list(G.edges())
         e = len(edges)
@@ -69,7 +82,7 @@ class RewireBipartite(BaseRewirer):
 
         return G
 
-    def full_rewire(self, G, accuracy, max_step=0, copy_graph=True, verbose=False):
+    def full_rewire(self, G, accuracy, timesteps=0, copy_graph=False, verbose=False):
         # Test if the input is a bipartite graph
         if bipartite.is_bipartite(G) == False:
 
@@ -96,15 +109,15 @@ class RewireBipartite(BaseRewirer):
         nr = len(Y)
         t = nc * nr
 
-        if max_step == 0:
+        if timesteps == 0:
             N = self.max_iter(e, t, accuracy)
 
         else:
-            N = max_step
+            N = timesteps
 
             if verbose == True:
                 warnings.warn(
-                    "Warning: max_step can different from the theoretical bound.",
+                    "Warning: timesteps can different from the theoretical bound.",
                     SyntaxWarning,
                 )
 
