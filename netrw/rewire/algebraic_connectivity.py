@@ -27,7 +27,7 @@ class AlgebraicConnectivity(BaseRewirer):
         Rewire network to maximize algebraic connectivity. In Sydney et al. paper,
         they find that rewiring 30% of the edges is sufficient.
         """
-        return step_rewire(G, p, timesteps, tries, copy_graph, verbose)
+        return self.step_rewire(G, p, timesteps, tries, copy_graph, verbose)
 
     def step_rewire(
         self, G, timesteps=1, copy_graph=True, directed=False, verbose=False
