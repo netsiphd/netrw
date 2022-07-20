@@ -28,8 +28,9 @@ def properties_overtime(init_graph, rewire_method, property1, tmax, numit):
     Returns
     -------
     property_dict: dictionary
-        Dictionary of output where the keys are the iteration number and the values are a list of the network property calculated
-        at each step of the rewiring process.
+        Dictionary of output where the keys are the property name and the values are a 2D numpy arry of the network property 
+        calculated at each step and iteration of the rewiring process. Rows are single iteration over a rewiring process.
+        Columns show different iterations of the rewiring process from the initial graph.
 
     """
     property_dict = {}
@@ -45,6 +46,4 @@ def properties_overtime(init_graph, rewire_method, property1, tmax, numit):
             propertyval = property1(G0) # calculate property of the rewired network
             property_dict[property1.__name__][i,j] = propertyval
   
-        
-
     return property_dict
