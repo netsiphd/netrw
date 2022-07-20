@@ -50,7 +50,7 @@ class KarrerRewirer(BaseRewirer):
         new_edges = [(x, y) for x, y in zip(left_nodes, right_nodes)]
 
         # Create new graph, note that it may have self-loops and multi-edges
-        new_graph = nx.from_edgelist(
-            selected_edges + new_edges, create_using=nx.MultiGraph
-        )
+        new_graph = nx.MultiGraph()
+        new_graph.add_nodes_from(G.nodes())
+        new_graph.add_edges_from(selected_edges + new_edges)
         return new_graph
