@@ -85,7 +85,7 @@ class RobustRewirer(BaseRewirer):
             return G
 
     def full_rewire(
-        self, G, copy_graph=False, timesteps=-1, directed=False, verbose=False
+        self, G, copy_graph=True, timesteps=-1, directed=False, verbose=False
     ):
         if timesteps == -1:
             timesteps = int(len(G.nodes()))
