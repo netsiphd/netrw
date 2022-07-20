@@ -1,8 +1,9 @@
-from .base import BaseRewirer
+from base import BaseRewirer
 import networkx as nx
 import warnings
 import copy
 import random
+
 
 class DkRewire(BaseRewirer):
     """
@@ -14,7 +15,17 @@ class DkRewire(BaseRewirer):
 
     Orsini, C. et al. Quantifying randomness in real networks. Nat. Commun. 6:8627 doi: 10.1038/ncomms9627 (2015).
     """
-    def step_rewire(self,G,d,copy_graph=False,timesteps=1,tries=1000,directed=False,verbose=False):
+
+    def step_rewire(
+        self,
+        G,
+        d,
+        copy_graph=False,
+        timesteps=1,
+        tries=1000,
+        directed=False,
+        verbose=False,
+    ):
         """
         This function calls the necessary function to rewire such that the
         'd'k-distribution is preserved for given d. This function is implemented
@@ -42,18 +53,24 @@ class DkRewire(BaseRewirer):
         # Check that graph is undirected
         if nx.is_directed(G):
             if directed:
-                warnings.warn("This algorithm is designed for undirected graphs. The graph input is directed and will be formatted to an undirected graph.",
-                SyntaxWarning)
+                warnings.warn(
+                    "This algorithm is designed for undirected graphs. The graph input is directed and will be formatted to an undirected graph.",
+                    SyntaxWarning,
+                )
+                print(nx.is_frozen(G))
                 G = nx.to_undirected(G)
+                print(nx.is_frozen(G))
             else:
-                raise ValueError("This algorithm is designed for undirected graphs. If you wish to run anyway as an undirected graph, set directed=True")
+                raise ValueError(
+                    "This algorithm is designed for undirected graphs. If you wish to run anyway as an undirected graph, set directed=True"
+                )
 
         # Make copy if necessary
         if copy_graph:
             G = copy.deepcopy(G)
 
         m = len(G.edges())
-        n = len(G.nodess())
+        n = len(G.nodes())
 
         # Check for empty graph
         if len(G.edges()) == 0:
@@ -61,36 +78,36 @@ class DkRewire(BaseRewirer):
             return G
 
         # Check for complete graph
-        if m == int(n*(n-1)/2):
+        if m == int(n * (n - 1) / 2):
+            warnings.warn("No edge swaps performed on complete graph.")
             return G
 
         # Calculate 0k-swap
         if d == 0:
-            self.zero_k_swap(G,timesteps,verbose)
+            return self.zero_k_swap(G, timesteps, verbose)
 
         # Calculate 1k-swap
         elif d == 1:
-            self.one_k_swap(G,timesteps,tries,verbose)
+            return self.one_k_swap(G, timesteps, tries, verbose)
 
         # Calculate 2k-swap
         elif d == 2:
-            self.two_k_swap(G,timesteps,tries,verbose)
+            return self.two_k_swap(G, timesteps, tries, verbose)
 
         # Calculate 2.1k-swap
         elif d == 2.1:
-            self.two_one_k_swap(G,timesteps,tries,verbose)
+            return self.two_one_k_swap(G, timesteps, tries, verbose)
 
         # Calculate 2.5k-swap
         elif d == 2.5:
-            self.two_five_k_swap(G,timesteps,tries,verbose)
+            return self.two_five_k_swap(G, timesteps, tries, verbose)
 
         else:
             raise ValueError("d must be 0, 1, 2, 2.1, or 2.5")
 
-
         pass
 
-    def zero_k_swap(self,G,timesteps,verbose):
+    def zero_k_swap(self, G, timesteps, verbose):
         """
         Rewires one edge to a random node. This maintains the average degree of the network.
         At each timestep, a random edge is chosen and a random end of the edge is chosen.
@@ -117,11 +134,11 @@ class DkRewire(BaseRewirer):
         # Edge swap for each time step
         for t in range(timesteps):
             # Choose a random edge
-            edge = random.choice(G.edges())
+            edge = random.choice(list(G.edges()))
 
             # Choose a random end of the edge
-            end_of_edge = random.choice([0,1])
-            not_end_of_edge = abs(end_of_edge-1)
+            end_of_edge = random.choice([0, 1])
+            not_end_of_edge = abs(end_of_edge - 1)
 
             # Choose a random node
             nodes_to_choose = list(G.nodes())
@@ -131,18 +148,18 @@ class DkRewire(BaseRewirer):
             # If verbose, store edges
             if verbose:
                 removed_edges[t] = [edge]
-                added_edges[t] = [(edge[not_end_of_edge],node)]
+                added_edges[t] = [(edge[not_end_of_edge], node)]
 
             # Update network
-            G.remove_edge(edge[0],edge[1])
-            G.add_edge(edge[not_end_of_edge],node)
+            G.remove_edge(edge[0], edge[1])
+            G.add_edge(edge[not_end_of_edge], node)
 
         if verbose:
             return G, removed_edges, added_edges
         else:
             return G
 
-    def one_k_swap(self,G,timesteps,tries,verbose):
+    def one_k_swap(self, G, timesteps, tries, verbose):
         """
         Rewires an edge while maintaining the degree distribution of the network.
         A swap is done such that if edges (u,v) and (x,y) are selected, the new edges are (u,x) and (v,y)
@@ -177,40 +194,51 @@ class DkRewire(BaseRewirer):
                 old_edge_1 = random.choice(edges)
                 old_edge_2 = random.choice(edges)
 
-                if .5 < np.random.random(seed=seed)
+                if 0.5 < random.random() or old_edge_1[0] == old_edge_2[1] or old_edge_1[1]==old_edge_2[0]:
                     # Swap edges
-                    new_edge_1 = (old_edge_1[0],old_edge_2[0])
-                    new_edge_2 = (old_edge_1[1],old_edge_2[1])
+                    new_edge_1 = (old_edge_1[0], old_edge_2[0])
+                    new_edge_2 = (old_edge_1[1], old_edge_2[1])
 
                     # Check for valid edges
-                    if new_edge_1 in list(G.edges()) or new_edge_2 not in list(G.edges()):
+                    if new_edge_1[0] == new_edge_1[1] or new_edge_2[0] == new_edge_2[0]:
+                        break
+
+                    if new_edge_1 not in list(G.edges()) and new_edge_2 not in list(
+                        G.edges()
+                    ):
                         valid = True
                         break
 
                 else:
-                    new_edge_1 = (old_edge_1[0],old_edge_2[1])
-                    new_edge_2 = (old_edge_1[1],old_edge_2[0])
+                    new_edge_1 = (old_edge_1[0], old_edge_2[1])
+                    new_edge_2 = (old_edge_1[1], old_edge_2[0])
                     # Check for valid edges
-                    if new_edge_1 in list(G.edges()) or new_edge_2 not in list(G.edges()):
+                    if new_edge_1[0] == new_edge_1[1] or new_edge_2[0] == new_edge_2[0]:
+                        break
+                    if new_edge_1 not in list(G.edges()) and new_edge_2 not in list(
+                        G.edges()
+                    ):
                         valid = True
                         break
 
             # Check that tries was not maximized
             if valid is False:
-                warnings.warn("No pair of edges was found with new edges that did not exist in tries allotted. Switch was not made at this timestep.")
+                warnings.warn(
+                    "No pair of edges was found with new edges that did not exist in tries allotted. Switch was not made at this timestep."
+                )
 
             # Store edges if verbose
             if verbose:
-                removed_edges[t] = [old_edge_1,old_edge_2]
-                added_edges[t] = [new_edge_1,new_edge_2]
+                removed_edges[t] = [old_edge_1, old_edge_2]
+                added_edges[t] = [new_edge_1, new_edge_2]
 
             # Update network
-            G.remove_edges_from([old_edge_1,old_edge_2])
-            G.add_edges_from([new_edge_1,new_edge_2])
+            G.remove_edges_from([old_edge_1, old_edge_2])
+            G.add_edges_from([new_edge_1, new_edge_2])
 
         return G
 
-    def two_k_swap(self,G,timesteps,tries,verbose):
+    def two_k_swap(self, G, timesteps, tries, verbose):
         """
         Rewires an edge while maintaining the joint degree distribution of the network.
         A swap is done by selecting a random edge end. A second edge end is then chosen
@@ -240,6 +268,11 @@ class DkRewire(BaseRewirer):
         for t in range(timesteps):
             # Check that swap occurs
             valid = False
+            edges = G.edges()
             for _ in range(tries):
                 # Choose an edge end at random
-                
+                edge = random.choice(edges)
+                edge_end = edge[random.choice([0, 1])]
+
+                # Get degree of node
+                edge_deg = G.degree(edge_end)
