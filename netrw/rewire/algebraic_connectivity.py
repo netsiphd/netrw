@@ -32,7 +32,7 @@ class AlgebraicConnectivity(BaseRewirer):
         return self.step_rewire(G, timesteps, copy_graph, directed, verbose)
 
     def step_rewire(
-        self, G, timesteps=1, copy_graph=True, directed=False, verbose=False
+        self, G, timesteps=1, copy_graph=False, directed=False, verbose=False
     ):
         """
         Rewire ``timesteps`` edges to maximize algebraic connectivity.
