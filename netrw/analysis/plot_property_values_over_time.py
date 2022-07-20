@@ -5,7 +5,7 @@ import netrw
 
 def plot_property_values_over_time(propvals, ylabel = '' ):
     """
-    Plot how a network property changes over time during a rewiring process.
+    Plot mean and standard deviation of how a network property changes over time during multiple iterations of a rewiring process.
     
     Parameters
     ----------
