@@ -28,7 +28,6 @@ def plot_property_values_over_time(propvals, ylabel=""):
     
     alllist = []  # list of all properties for all iterations at each of the time steps
     
-
     valarray = propvals
     num_rows, num_cols = valarray.shape
         
@@ -40,7 +39,7 @@ def plot_property_values_over_time(propvals, ylabel=""):
     # find mean and standard deviation over different iterations of rewiring process
     meanlist = []
     sdlist = []
-    for k in range(num_rows):
+    for k in range(num_cols):
         meanlist.append(np.mean(alllist[k]))
         sdlist.append(np.std(alllist[k]))
 
