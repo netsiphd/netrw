@@ -19,9 +19,8 @@ def plot_property_values_over_time(propvals, ylabel = '' ):
     
     Returns
     -------
-    property_dict: dictionary
-        Dictionary of output where the keys are the iteration number and the values are a list of the network property calculated
-        at each step of the rewiring process.
+    fig: matplotlib figure
+        Figure of mean and standard deviation for a network property throughout the rewiring process. 
 
     """
     alllist = [] # list of all properties for all iterations at each of the time steps
