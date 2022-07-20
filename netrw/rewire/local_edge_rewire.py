@@ -118,7 +118,7 @@ class LocalEdgeRewiring(BaseRewirer):
 
         for t in range(timesteps):
             if verbose:
-                G, remov_t, added_t = step_rewire(G, copy_graph, verbose)
+                G, remov_t, added_t = self.step_rewire(G, copy_graph, verbose)
                 removed_edges[t] = remov_t[0]
                 added_edges[t] = added_t[0]
 
