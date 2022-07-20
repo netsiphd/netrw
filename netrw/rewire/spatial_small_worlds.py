@@ -9,8 +9,16 @@ class SpatialSmallWorld(BaseRewirer):
     """
     Implements spatial small worlds with optional periodic boundary conditions and optional rewiring instead of edge addition following the algorithm described in:
     Barthelemy, Marc. "Spatial Small-Worlds." Spatial Networks. Springer, Cham, 2022. 243-252.
-
+    
     Nodes *MUST* have names equal to lists of their coordinates. Lattice graphs with this scheme can be initialized by the intialize function.
+    
+    Args:
+    
+    p = in full_rewire rewires edges N x p numbers of times
+    dim = specifies the number of nodes in each dimension of a lattice graph
+    is_periodic = implements periodic boundary conditions for edge length calculation
+    alpha = rewires towards length distribution P(L) ~ L^(-alpha)
+    
     """
 
     # int(p*len(G.nodes()))
