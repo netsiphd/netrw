@@ -56,6 +56,10 @@ class AlgebraicConnectivity(BaseRewirer):
                 SyntaxWarning,
             )
             G = nx.Graph(G)
+        elif nx.is_directed(G) and directed is False:
+            raise ValueError(
+                "This algorithm is designed for undirected graphs. If you want to run this on a DiGraph, set directed=True."
+            )
 
         if not nx.is_connected(G):
             raise ValueError(
