@@ -28,42 +28,22 @@ def properties_overtime(init_graph, rewire_method, property1, tmax, numit):
     Returns
     -------
     property_dict: dictionary
-        Dictionary of output where the keys are the iteration number and the values are a list of the network property calculated
-        at each step of the rewiring process.
+        Dictionary of output where the keys are the property name and the values are a 2D numpy arry of the network property 
+        calculated at each step and iteration of the rewiring process. Rows are single iteration over a rewiring process.
+        Columns show different iterations of the rewiring process from the initial graph.
 
     """
-
     property_dict = {}
+    property_dict[property1.__name__] = np.zeros((numit, tmax))
     rw = rewire_method()
 
     for i in range(numit):
         G0 = deepcopy(init_graph)
-        property_list = [property1(G0)]  # calculate property of initial network
-        for j in range(tmax):
+        propertyval = property1(G0)  # calculate property of initial network
+        property_dict[property1.__name__][i,0] = propertyval
+        for j in range(1,tmax):
             G0 = rw.step_rewire(G0, copy_graph=False)  # rewire
-            property_list.append(
-                property1(G0)
-            )  # calculate property of the rewired network
-        property_dict[i] = property_list
-
-    alllist = []  # list of all properties for all iterations at each of the time steps
-    for k in range(tmax):
-        alllist.append([])
-        for l in range(numit):
-            alllist[k].append(property_dict[l][k])
-
-    # find mean and standard deviation over different iterations of rewiring process
-    meanlist = []
-    sdlist = []
-    for k in range(tmax):
-        meanlist.append(np.mean(alllist[k]))
-        sdlist.append(np.std(alllist[k]))
-
-    # find upper and lower bound of standard deviation interval around the mean
-    upperbd = []
-    lowerbd = []
-    for a in range(len(meanlist)):
-        upperbd.append(meanlist[a] + sdlist[a])
-        lowerbd.append(meanlist[a] - sdlist[a])
-
+            propertyval = property1(G0) # calculate property of the rewired network
+            property_dict[property1.__name__][i,j] = propertyval
+  
     return property_dict
