@@ -15,7 +15,7 @@ class GlobalRewiring(BaseRewirer):
         """
         Run a full rewire of the global edge rewiring.
         """
-        return step_rewire(G, p, timesteps, tries, copy_graph, verbose)
+        return self.step_rewire(G, p, timesteps, tries, copy_graph, verbose)
 
     def step_rewire(self, G, p, timesteps=1, tries=100, copy_graph=True, verbose=False):
         """
@@ -31,8 +31,8 @@ class GlobalRewiring(BaseRewirer):
             verbose (bool) - indicator to return edges changed at each timestep
         Returns:
             G (networkx)
-            prev_edges (dict) - edges deleted at each timestep
-            new_edges (dict) - edges added at each timestep
+            removed_edges (dict) - edges deleted at each timestep
+            added_edges (dict) - edges added at each timestep
         """
         # Make copy if necessary
         if copy_graph:
@@ -101,7 +101,7 @@ class GlobalRewiring(BaseRewirer):
                     G.add_edge(new_edge[0], new_edge[1])
 
         if verbose:
-            return G, prev_edges, new_edges
+            return G, removed_edges, added_edges
 
         else:
             return G
