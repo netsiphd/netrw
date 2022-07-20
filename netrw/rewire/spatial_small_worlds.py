@@ -3,11 +3,8 @@ import numpy as np
 import random
 import copy
 from .base import BaseRewirer
-​
-​
-# In[81]:
-​
-​
+
+
 class SpatialSmallWorld(BaseRewirer):
     """
     Implements spatial small worlds with optional periodic boundary conditions and optional rewiring instead of edge addition following the algorithm described in:
@@ -24,7 +21,7 @@ class SpatialSmallWorld(BaseRewirer):
     manhattan_dist = if True uses Manhattan distance between nodes, else Euclidean distance
 
     """
-    # int(p*len(G.nodes()))
+
     def step_rewire(self,G,p,dim,alpha,copy_graph=False,is_periodic=True,does_remove=True,manhattan_dist=True,timesteps=1,directed=False,verbose=False):
         if copy_graph:
             G = copy.deepcopy(G)
@@ -98,12 +95,13 @@ class SpatialSmallWorld(BaseRewirer):
             return G, removed_edges, added_edges
         else:
             return G
+
     def full_rewire(self,G,p,dim,alpha,copy_graph=False,is_periodic=True,does_remove=True,manhattan_dist=True,timesteps=-1,directed=False,verbose=False):
         if timesteps == -1:
             timesteps = int(p*len(G.nodes()))
         G = self.step_rewire(G,p,dim,alpha,copy_graph,is_periodic,does_remove,manhattan_dist,timesteps,directed,verbose)
         return G
-​
+
     def initialize_graph(self,dim):
         if len(dim) == 3:
             dimsize = 3
