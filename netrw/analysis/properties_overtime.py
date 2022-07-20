@@ -67,17 +67,4 @@ def properties_overtime(init_graph, rewire_method, property1, tmax, numit):
         upperbd.append(meanlist[a]+sdlist[a])
         lowerbd.append(meanlist[a]-sdlist[a])
 
-    # plot mean and standard deviation for chosen property for the given time steps of rewiring
-    fig, (ax0) = plt.subplots(nrows=1)
-    ax0.plot(range(tmax), meanlist, marker='o', color = 'blue')
-    ax0.plot(range(tmax), upperbd, color = 'blue')
-    ax0.plot(range(tmax), lowerbd, color = 'blue' )  
-    ax0.fill_between(range(tmax), upperbd,lowerbd, color='cornflowerblue',alpha=.5) 
-    ax0.set_xlabel('number of rewiring steps', fontsize=15)
-    ax0.set_ylabel('Mean '+ property1.__name__, fontsize=15)
-
-    fig.show()
-
-    return property_dict, fig
-
-
+    return property_dict
