@@ -7,5 +7,6 @@ from .algebraic_connectivity import AlgebraicConnectivity
 from .randomized_weights import RandomizedWeightCM_swap
 from .randomized_weights import RandomizedWeightCM_redistribution
 from .robust_rewiring import RobustRewirer
+from .spatial_small_worlds import SpatialSmallWorld
 
 __all__ = []
