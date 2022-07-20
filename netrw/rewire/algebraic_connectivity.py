@@ -13,7 +13,7 @@ class AlgebraicConnectivity(BaseRewirer):
     computing the Fielder vector of a given network and determining
     the value of alpha for each edge, where v is the Fielder vector
     and alpha_{ij} = |v_i-v_j| is absolute difference of the entries
-    in the Fiedler vector for nodes i and j such that (i,j)\in E(G).
+    in the Fiedler vector for nodes i and j such that (i,j) in E(G).
     The edge with the smallest value of alpha is removed and the non-edge
     with the largest alpha is added.
 
@@ -22,15 +22,27 @@ class AlgebraicConnectivity(BaseRewirer):
     Applied Mathematics and computation 219.10 (2013): 5465-5479.
     """
 
-    def rewire(self, G, phi=1, copy_graph=False, directed=False):
+    def full_rewire(
+        self, G, timesteps=-1, copy_graph=True, directed=True, verbose=False
+    ):
         """
-        Rewire phi edges to maximize algebraic connectivity.
+        Rewire network to maximize algebraic connectivity. In Sydney et al. paper,
+        they find that rewiring 30% of the edges is sufficient.
+        """
+        return self.step_rewire(G, timesteps, copy_graph, directed, verbose)
+
+    def step_rewire(
+        self, G, timesteps=1, copy_graph=False, directed=True, verbose=False
+    ):
+        """
+        Rewire ``timesteps`` edges to maximize algebraic connectivity.
 
         Parameters:
             G (networkx)
-            phi (int) - number of edge rewires
+            timesteps (int) - number of edge rewires
             copy_graph (bool) - return a copy of the network
             directed (bool) - compute for directed network on undirected copy
+            verbose (bool) - indicator to return edges changed at each timestep
 
         Return:
             G (networkx)
@@ -38,17 +50,30 @@ class AlgebraicConnectivity(BaseRewirer):
         if copy_graph:
             G = copy.deepcopy(G)
 
-        if not nx.is_connected(G):
-            raise ValueError(
-                "Disconnected graph. This method is implemented for undirected, connected graphs."
-            )
-
         if nx.is_directed(G) and directed is True:
             warnings.warn(
                 "This algorithm is designed for undirected graphs. The graph input is directed and will be formatted to an undirected graph.",
                 SyntaxWarning,
             )
-            G = nx.to_undirected(G)
+            G = nx.Graph(G)
+        elif nx.is_directed(G) and directed is False:
+            raise ValueError(
+                "This algorithm is designed for undirected graphs. If you want to run this on a DiGraph, set directed=True."
+            )
+
+        if not nx.is_connected(G):
+            raise ValueError(
+                "Disconnected graph. This method is implemented for undirected, connected graphs."
+            )
+
+        # Initialize storing dictionaries if necessary
+        if verbose:
+            removed_edges = {}
+            added_edges = {}
+
+        # Check for full rewire
+        if timesteps == -1:
+            timesteps = int(0.3 * len(G.edges()))
 
         # Get necessary parameters
         nodes = list(G.nodes())
@@ -61,8 +86,8 @@ class AlgebraicConnectivity(BaseRewirer):
             raise Warning("Algebraic connectivity is already maximized.")
             return G
 
-        # Rewire phi edges
-        for _ in range(phi):
+        # Rewire ``timesteps`` edges
+        for t in range(timesteps):
             # Reset edge and node list
             nodes = list(G.nodes())
             edges = list(G.edges())
@@ -113,10 +138,18 @@ class AlgebraicConnectivity(BaseRewirer):
                     if np.array(edge_alpha).all() == np.inf:
                         raise ValueError("Failed to converge.")
 
+            # Update dictionaries
+            if verbose:
+                removed_edges[t] = [(edges[alpha_min][0], edges[alpha_min][1])]
+                added_edges[t] = [(non_edges[alpha_max][0], non_edges[alpha_max][1])]
+
             # Remove edge
             G.remove_edge(edges[alpha_min][0], edges[alpha_min][1])
             # Add edge
             G.add_edge(non_edges[alpha_max][0], non_edges[alpha_max][1])
 
         # Return new network
-        return G
+        if verbose:
+            return G, removed_edges, added_edges
+        else:
+            return G
