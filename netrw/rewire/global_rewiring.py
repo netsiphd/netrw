@@ -13,31 +13,11 @@ class GlobalRewiring(BaseRewirer):
         self, G, p, timesteps=-1, tries=100, copy_graph=True, verbose=False
     ):
         """
-<<<<<<< HEAD
-        Run a single step of the `global_edge_rewiring` function.
-        """
-        return global_edge_rewiring(G, p, timesteps, tries, copy_graph, verbose)
-
-
-    def step_rewire(
-        self, G, p, timesteps=1, tries=100, copy_graph=True, verbose=False
-    ):
-        """
-        Run a single step of the `global_edge_rewiring` function.
-        """
-        return global_edge_rewiring(G, p, timesteps, tries, copy_graph, verbose)
-
-
-    def global_edge_rewiring(
-        self, G, p, timesteps=-1, tries=100, copy_graph=True, verbose=False
-    ):
-=======
         Run a full rewire of the global edge rewiring.
         """
-        return step_rewire(G, p, timesteps, tries, copy_graph, verbose)
+        return self.step_rewire(G, p, timesteps, tries, copy_graph, verbose)
 
     def step_rewire(self, G, p, timesteps=1, tries=100, copy_graph=True, verbose=False):
->>>>>>> b45cf5f311656523c6c0b32975bcc2df491c88ce
         """
         Generate a Watts-Strogatz network with n nodes where each node is connected
         to its k-nearest neighbors and each edge is rewired with probability p.
@@ -51,8 +31,8 @@ class GlobalRewiring(BaseRewirer):
             verbose (bool) - indicator to return edges changed at each timestep
         Returns:
             G (networkx)
-            prev_edges (dict) - edges deleted at each timestep
-            new_edges (dict) - edges added at each timestep
+            removed_edges (dict) - edges deleted at each timestep
+            added_edges (dict) - edges added at each timestep
         """
         # Make copy if necessary
         if copy_graph:
@@ -67,21 +47,12 @@ class GlobalRewiring(BaseRewirer):
 
         # If verbose save edge changes
         if verbose:
-<<<<<<< HEAD
-            prev_edges = {}
-            new_edges = {}
-
-        # Give every edge opportunity to change
-        if timesteps == -1:
-            timesteps = len(list(G.edges()))*10
-=======
             removed_edges = {}
             added_edges = {}
 
         # Give every edge opportunity to change
         if timesteps == -1:
-            timesteps = len(list(G.edges())) * 10
->>>>>>> b45cf5f311656523c6c0b32975bcc2df491c88ce
+            timesteps = len(list(G.edges()))*10
 
         # Rewire at each timestep
         for t in range(timesteps):
@@ -122,20 +93,15 @@ class GlobalRewiring(BaseRewirer):
                 else:
                     # Update dictionaries if verbose
                     if verbose:
-<<<<<<< HEAD
-                        prev_edges[t] = [edge]
-                        new_edges[t] = [new_edge]
-=======
                         removed_edges[t] = [edge]
                         added_edges[t] = [new_edge]
->>>>>>> b45cf5f311656523c6c0b32975bcc2df491c88ce
 
                     # Update network
                     G.remove_edge(edge[0], edge[1])
                     G.add_edge(new_edge[0], new_edge[1])
 
         if verbose:
-            return G, prev_edges, new_edges
+            return G, removed_edges, added_edges
 
         else:
             return G
