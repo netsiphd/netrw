@@ -3,14 +3,19 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import netrw
 
-def plot_property_values_over_time(propvals, ylabel ):
+def plot_property_values_over_time(propvals, ylabel = '' ):
     """
     Plot how a network property changes over time during a rewiring process.
     
     Parameters
     ----------
-    propvals : NetworkX graph
-        Initial graph upon which rewiring will occur.
+    propvals : Dictionary
+        Dictionary of output from properties_overtime.
+        The keys are the iteration number and the values are a list of the network property calculated
+        at each step of the rewiring process.
+    ylabel: string, optional
+        Label for y axis of graph for mean and standard deviation of network property
+        Default is no label.
     
     Returns
     -------
