@@ -52,8 +52,17 @@ class AssortativityLocalMaximum(BaseRewirer):
 
     def full_rewire(self, G, timesteps=np.inf, copy_graph=True, verbose=False):
         """
-        Rewire network to maximize algebraic connectivity. In Sydney et al. paper,
-        they find that rewiring 30% of the edges is sufficient.
+        Run until a local maximum assortativity is reached. One timestep is one attempt to swap two edges.
+
+        Parameters:
+            G (networkx)
+            timesteps (int) - number of edge rewire combinations to attempt
+            copy_graph (bool) - return a copy of the network
+            directed (bool) - compute for directed network on undirected copy
+            verbose (bool) - indicator to return edges changed at each timestep
+
+        Return:
+            G (networkx)
         """
 
         if not isinstance(G, nx.classes.digraph.DiGraph) and not isinstance(
@@ -145,11 +154,11 @@ class AssortativityLocalMaximum(BaseRewirer):
         self, G, timesteps=1, copy_graph=False, directed=True, verbose=False
     ):
         """
-        Rewire ``timesteps`` edges to maximize algebraic connectivity.
+       Make rewirings if they increase assortativity. One timestep is one attempt to swap two edges.
 
         Parameters:
             G (networkx)
-            timesteps (int) - number of edge rewires
+            timesteps (int) - number of edge rewire combinations to attempt
             copy_graph (bool) - return a copy of the network
             directed (bool) - compute for directed network on undirected copy
             verbose (bool) - indicator to return edges changed at each timestep
