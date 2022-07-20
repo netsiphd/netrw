@@ -13,9 +13,9 @@ class AssortativeRewirer(BaseRewirer):
         R. Xulvi-Brunet and I.M. Sokolov
 
     """
-    
-    def step_rewire(self, G, p = 0.5, assortative=True, copy_graph=True):
-        
+
+    def step_rewire(self, G, p=0.5, assortative=True, copy_graph=True):
+
         """     
         Inputs:
             p (float) -- the probability of making the swap be in favor of
@@ -26,7 +26,7 @@ class AssortativeRewirer(BaseRewirer):
                                     favor increasing assortativity. Otherwise,
                                     they favor increasing disassortativity.        
         """
-        
+
         if copy_graph:
             G = copy.deepcopy(G)
 
@@ -34,14 +34,14 @@ class AssortativeRewirer(BaseRewirer):
         i, j, k, l = -1, -1, -1, -1
 
         # loop until all four nodes involved in the swap are distinct
-        while len(set([i,j,k,l])) != 4:
+        while len(set([i, j, k, l])) != 4:
 
             i, j = random.choice(list(G.edges))
             k, l = random.choice(list(G.edges))
 
-            if len(set([i,j,k,l]))==4:
-                
-                if np.random.rand()<=p:
+            if len(set([i, j, k, l])) == 4:
+
+                if np.random.rand() <= p:
 
                     # degree-sorting for edge-swap with probability p
                     sor = sorted([i, j, k, l], key=lambda y: G.degree[y])
@@ -49,8 +49,7 @@ class AssortativeRewirer(BaseRewirer):
                     if assortative:
                         I, J, K, L = sor
                     else:
-                        I, J, K, L = sor[0],sor[3],sor[1],sor[2]
-
+                        I, J, K, L = sor[0], sor[3], sor[1], sor[2]
 
                 else:
 
@@ -71,7 +70,7 @@ class AssortativeRewirer(BaseRewirer):
 
         return G
 
-    def full_rewire(self, G, p = 0.5, assortative=True, copy_graph=True):
+    def full_rewire(self, G, p=0.5, assortative=True, copy_graph=True):
         """
         Not implemented
         """
